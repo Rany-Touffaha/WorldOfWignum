@@ -189,6 +189,7 @@ DerivedDataCache/*
 #Assets downloaded from store
 Content/**/BlackAlder
 Content/**/Megascans
+Content/**/MedievalDungeon
 
 ### UnrealEngine Patch ###
 # Don't ignore icon and splash images for mobile app
