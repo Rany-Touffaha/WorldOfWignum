@@ -32,5 +32,8 @@ void AItem::Tick(float DeltaTime)
 
 	DRAW_SPHERE_SINGLE_FRAME(GetActorLocation())
 	DRAW_VECTOR_SINGLE_FRAME(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f)
+
+	const FVector AvgVector = Avg<FVector>(GetActorLocation(), FVector::ZeroVector);
+	DRAW_POINT_SINGLE_FRAME(AvgVector);
 }
 
