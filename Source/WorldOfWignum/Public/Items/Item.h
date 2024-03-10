@@ -22,8 +22,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Sine Parameters")
 	float TimeConstant = 5.f;
 
+	UFUNCTION(BlueprintPure)
+	float TransformedSin() const;
+
+	UFUNCTION(BlueprintPure)
+	float TransformedCos() const;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float RunningTime;
+	float RunningTime = 0;
 	
 };
