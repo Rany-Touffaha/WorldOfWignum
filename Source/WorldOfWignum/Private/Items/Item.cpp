@@ -1,4 +1,5 @@
 #include "Items/Item.h"
+#include "WorldOfWignum/DebugMacros.h"
 
 AItem::AItem()
 {
