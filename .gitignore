@@ -191,6 +191,7 @@ DerivedDataCache/*
 Content/**/BlackAlder
 Content/**/Megascans
 Content/**/MedievalDungeon
+Content/**/AnimalVarietyPack
 
 ### UnrealEngine Patch ###
 # Don't ignore icon and splash images for mobile app
