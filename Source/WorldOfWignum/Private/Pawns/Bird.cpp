@@ -34,10 +34,11 @@ void ABird::BeginPlay()
 
 void ABird::Move(const FInputActionValue& Value)
 {
-	if (Value.Get<bool>())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IA_Move triggered"));
-	}
+	if(const float DirectionValue = Value.Get<float>(); Controller && DirectionValue != 0.f)
+		{
+			const FVector Forward = GetActorForwardVector();
+			AddMovementInput(Forward, DirectionValue);
+		}
 }
 
 void ABird::Tick(float DeltaTime)
