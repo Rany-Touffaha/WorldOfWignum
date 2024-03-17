@@ -5,7 +5,10 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create a default sub-object for the item's mesh
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+
+	// Set the root component to the item's mesh
 	RootComponent = ItemMesh;
 }
 
@@ -29,6 +32,8 @@ float AItem::TransformedCos() const
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Update the running time for the sine and cosine functions
 	RunningTime += DeltaTime;
 
 }

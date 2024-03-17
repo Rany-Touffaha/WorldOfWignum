@@ -5,6 +5,7 @@
 #include "InputActionValue.h"
 #include "Bird.generated.h"
 
+// Forward declarations for class dependencies
 class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UInputMappingContext;
@@ -27,28 +28,38 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// Property for bird's input mapping context
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputMappingContext* BirdMappingContext;
 
+	// Property for bird's move action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputAction* MoveAction;
 
+	// Property for bird's look action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputAction* LookAction;
 
+	// Function to handle bird movement
 	void Move(const FInputActionValue& Value);
+
+	// Function to handle bird looking
 	void Look(const FInputActionValue& Value);
 
 private:
+	// Capsule component for collision
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
 
+	// Skeletal mesh component for the bird
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* BirdMesh;
 
+	// Spring arm component for camera control
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
+	// Camera component for bird's view
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
 };
