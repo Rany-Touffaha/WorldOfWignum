@@ -1,12 +1,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "Kwang.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class WORLDOFWIGNUM_API AKwang : public ACharacter
@@ -27,5 +29,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* MovementAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* LookAction;
+
 	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+private:
+
+	// Spring arm component for camera control
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArm;
+
+	// Camera component for character's view
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* ViewCamera;
 };
+ 
