@@ -5,15 +5,23 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 AKwang::AKwang()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Remove inheritance of Character's class rotation from the Controller
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	// Make character rotate towards our movement
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// Change the speed of the Rotation Rate
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
 	// Set up the spring arm component for camera control
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -29,7 +37,7 @@ void AKwang::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Add the bird's input mapping context to the Enhanced Input subsystem
+	// Add the player's input mapping context to the Enhanced Input subsystem
 	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -43,10 +51,17 @@ void AKwang::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
-	const FVector Forward = GetActorForwardVector();
-	AddMovementInput(Forward, MovementVector.Y);
-	const FVector Right = GetActorRightVector();
-	AddMovementInput(Right, MovementVector.X);
+	// Get Yaw of Controller Rotator
+	const FRotator ControlRotation = GetControlRotation();
+	const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+
+	// Add Movement for character to move forward and backward
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+
+	// Add Movement for character to move sideways
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void AKwang::Look(const FInputActionValue& Value)
@@ -71,7 +86,6 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// Bind the character's movement and look functions to input actions using Enhanced Input
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AKwang::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AKwang::Look);
-
 	}
 }
 
