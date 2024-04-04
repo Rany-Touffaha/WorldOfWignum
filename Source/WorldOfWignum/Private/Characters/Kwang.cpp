@@ -86,6 +86,7 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// Bind the character's movement and look functions to input actions using Enhanced Input
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AKwang::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AKwang::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	}
 }
 
