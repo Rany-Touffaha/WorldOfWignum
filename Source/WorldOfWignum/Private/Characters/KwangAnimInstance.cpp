@@ -22,5 +22,6 @@ void UKwangAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if(KwangMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(KwangMovement->Velocity);
+		IsFalling = KwangMovement->IsFalling();
 	}
 }
