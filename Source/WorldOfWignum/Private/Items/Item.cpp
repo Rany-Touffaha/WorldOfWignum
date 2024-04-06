@@ -1,5 +1,6 @@
 #include "Items/Item.h"
 #include "WorldOfWignum/DebugMacros.h"
+#include "Components/SphereComponent.h"
 
 AItem::AItem()
 {
@@ -10,11 +11,17 @@ AItem::AItem()
 
 	// Set the root component to the item's mesh
 	RootComponent = ItemMesh;
+
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
+	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
 }
 
 //Transforms Sin function using Amplitude and TimeConstant
@@ -27,6 +34,18 @@ float AItem::TransformedSin() const
 float AItem::TransformedCos() const
 {
 	return Amplitude* FMath::Cos(RunningTime * TimeConstant);;
+}
+
+void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FString OtherActorName = OtherActor->GetName();
+}
+
+void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();
 }
 
 void AItem::Tick(float DeltaTime)
