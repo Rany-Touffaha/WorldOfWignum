@@ -43,19 +43,19 @@ protected:
 
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// Static mesh component for the item
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
 	
 private:
 	// Property to track running time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime = 0;
-
-	// Static mesh component for the item
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* ItemMesh;
-
+	
+	// Sphere component for the item
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
-	
 };
 
 // Template function to calculate average
