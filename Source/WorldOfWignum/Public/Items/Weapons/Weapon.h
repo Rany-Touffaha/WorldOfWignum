@@ -6,9 +6,6 @@
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class WORLDOFWIGNUM_API AWeapon : public AItem
 {

@@ -34,9 +34,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* EKeyAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* DodgeAction;
 	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	
+	void EKeyPressed();
+	void Attack();
+	void Dodge();
 private:
 
 	// Spring arm component for camera control
