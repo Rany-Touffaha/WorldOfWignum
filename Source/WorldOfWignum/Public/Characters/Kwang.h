@@ -9,6 +9,7 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class AItem;
 
 UCLASS()
 class WORLDOFWIGNUM_API AKwang : public ACharacter
@@ -50,8 +51,8 @@ protected:
 	void EKeyPressed();
 	void Attack();
 	void Dodge();
+	
 private:
-
 	// Spring arm component for camera control
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -59,5 +60,11 @@ private:
 	// Camera component for character's view
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
+
+	UPROPERTY(VisibleInstanceOnly)
+	AItem* OverlappingItem;
+	
+public:
+	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; };
 };
  
