@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "CharacterTypes.h"
 #include "KwangAnimInstance.generated.h"
 
 /**
@@ -27,4 +28,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool IsFalling;
+
+	ECharacterState CharacterState;
 };

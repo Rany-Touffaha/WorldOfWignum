@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "CharacterTypes.h"
 #include "Kwang.generated.h"
 
 class UInputMappingContext;
@@ -53,6 +54,9 @@ protected:
 	void Dodge();
 	
 private:
+
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+	
 	// Spring arm component for camera control
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -65,6 +69,7 @@ private:
 	AItem* OverlappingItem;
 	
 public:
-	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; };
+	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };
  
