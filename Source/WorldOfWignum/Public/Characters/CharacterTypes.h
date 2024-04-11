@@ -14,6 +14,7 @@ enum class ECharacterState : uint8
 /**
  * Enum class declaration for action states
  */
+UENUM(BlueprintType)
 enum class EActionState : uint8
 {
 	EAS_Unoccupied UMETA(DisplayName = "Unoccupied"),

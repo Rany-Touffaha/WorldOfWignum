@@ -114,10 +114,20 @@ void AKwang::PlayAttackMontage() const
 	}
 }
 
+void AKwang::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+bool AKwang::CanAttack() const
+{
+	return CharacterState != ECharacterState::ECS_Unequipped && ActionState == EActionState::EAS_Unoccupied;
+}
+
 // Function to handle attack action
 void AKwang::Attack()
 {
-	if (ActionState == EActionState::EAS_Unoccupied)
+	if (CanAttack())
 	{
 		PlayAttackMontage();
 		ActionState = EActionState::EAS_Attacking;

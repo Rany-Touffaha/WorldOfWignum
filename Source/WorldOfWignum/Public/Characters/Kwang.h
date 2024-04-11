@@ -73,12 +73,17 @@ protected:
 	 */
 
 	void PlayAttackMontage() const;
-	
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+	bool CanAttack() const;
+
 private:
 	// Initialise character state to Unequipped
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
 	// Initialise action state to Unoccupied
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 	
 	// Spring arm component for camera control
