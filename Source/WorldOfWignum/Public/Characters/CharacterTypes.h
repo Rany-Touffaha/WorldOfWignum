@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * Enum class declaration for character states
+ */
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {

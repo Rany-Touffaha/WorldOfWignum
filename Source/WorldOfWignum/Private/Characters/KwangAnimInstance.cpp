@@ -7,10 +7,12 @@
 void UKwangAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	
+
+	// Get the owning pawn
 	Kwang = Cast<AKwang>(TryGetPawnOwner());
 	if (Kwang)
 	{
+		// Get the character movement component
 		KwangMovement = Kwang->GetCharacterMovement();
 	}
 }
@@ -21,8 +23,13 @@ void UKwangAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	if(KwangMovement)
 	{
+		// Calculate ground speed using velocity
 		GroundSpeed = UKismetMathLibrary::VSizeXY(KwangMovement->Velocity);
+
+		// Check if the character is falling
 		IsFalling = KwangMovement->IsFalling();
+
+		// Get the character's current state
 		CharacterState = Kwang->GetCharacterState();
 	}
 }

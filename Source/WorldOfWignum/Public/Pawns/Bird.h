@@ -5,7 +5,7 @@
 #include "InputActionValue.h"
 #include "Bird.generated.h"
 
-// Forward declarations for class dependencies
+// Forward declarations for Bird Class
 class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UInputMappingContext;
@@ -13,6 +13,9 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
+/**
+ * Bird class declaration
+ */
 UCLASS()
 class WORLDOFWIGNUM_API ABird : public APawn
 {

@@ -1,5 +1,4 @@
 #include "Characters/Kwang.h"
-
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -9,7 +8,7 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 
-
+// Kwang character class constructor
 AKwang::AKwang()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -49,6 +48,7 @@ void AKwang::BeginPlay()
 	}	
 }
 
+// Function to handle movement input
 void AKwang::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -66,6 +66,7 @@ void AKwang::Move(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, MovementVector.X);
 }
 
+// Function to handle looking around input
 void AKwang::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -74,21 +75,26 @@ void AKwang::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
+// Function to handle E key action
 void AKwang::EKeyPressed()
 {
-	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
-	if (OverlappingWeapon)
+	if (const AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
+		//Attaching Weapon to Right Hand Socket
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+
+		//Change Character state to equipped one-handed
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 	}
 }
 
+// Function to handle attack action
 void AKwang::Attack()
 {
 	
 }
 
+// Function to handle dodge action
 void AKwang::Dodge()
 {
 	
@@ -99,6 +105,7 @@ void AKwang::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
 void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

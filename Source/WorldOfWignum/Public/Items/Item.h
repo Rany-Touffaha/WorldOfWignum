@@ -4,8 +4,12 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+//Forward declarations for Item class
 class USphereComponent;
 
+/**
+ * Item class declaration
+ */
 UCLASS()
 class WORLDOFWIGNUM_API AItem : public AActor
 {
@@ -26,6 +30,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Sine Parameters")
 	float TimeConstant = 5.f;
 
+	// Static mesh component for the item
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
+
 	// Blueprint pure function to calculate transformed sine
 	UFUNCTION(BlueprintPure)
 	float TransformedSin() const;
@@ -38,16 +46,14 @@ protected:
 	template<typename T>
 	static T Avg(T First, T Second);
 
+	// Function to handle sphere overlap events
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	// Function to handle events when leaving sphere overlap
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	// Static mesh component for the item
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* ItemMesh;
-	
 private:
 	// Property to track running time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

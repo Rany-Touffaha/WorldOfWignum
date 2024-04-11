@@ -6,6 +6,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+/**
+ * Bird class constructor
+ */
 ABird::ABird()
 {
 	PrimaryActorTick.bCanEverTick = true;
