@@ -89,8 +89,8 @@ void AKwang::EKeyPressed()
 	}
 }
 
-// Function to handle attack action
-void AKwang::Attack()
+//Function that play the attack montages
+void AKwang::PlayAttackMontage() const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if(AnimInstance && AttackMontage)
@@ -111,6 +111,16 @@ void AKwang::Attack()
 			break;
 		}
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	}
+}
+
+// Function to handle attack action
+void AKwang::Attack()
+{
+	if (ActionState == EActionState::EAS_Unoccupied)
+	{
+		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
 	}
 }
 

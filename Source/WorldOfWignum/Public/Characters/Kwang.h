@@ -35,49 +35,51 @@ protected:
 	// Input Mapping Context for Kwang character
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* KwangContext;
-
-	// Movement action input
+	
+	/**
+	 *	Input Actions
+	 */
+	
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* MovementAction;
 
-	// Look action input
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* LookAction;
 
-	// Jump action input
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* JumpAction;
 
-	// E key action input
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* EKeyAction;
 
-	// Attack action input
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* AttackAction;
 
-	// Dodge action input
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* DodgeAction;
 
-	// Function to handle movement input
+	/**
+	 *	Callback functions for input
+	 */
+	
 	void Move(const FInputActionValue& Value);
-
-	// Function to handle looking around input
 	void Look(const FInputActionValue& Value);
-
-	// Function to handle E key action
 	void EKeyPressed();
-
-	// Function to handle attack action
 	void Attack();
-
-	// Function to handle dodge action
 	void Dodge();
+
+	/**
+	 *	Play montage functions
+	 */
+
+	void PlayAttackMontage() const;
 	
 private:
 	// Initialise character state to Unequipped
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	// Initialise action state to Unoccupied
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 	
 	// Spring arm component for camera control
 	UPROPERTY(VisibleAnywhere)
