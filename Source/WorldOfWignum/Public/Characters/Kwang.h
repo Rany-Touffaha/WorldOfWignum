@@ -12,6 +12,7 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
+class UAnimMontage;
 
 /**
  * Kwang character class declaration
@@ -89,6 +90,13 @@ private:
 	// Variable storing current overlapping item
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
+
+	/**
+	 *	Animation montages
+	 */
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 	
 public:
 	// Function to set overlapping item
