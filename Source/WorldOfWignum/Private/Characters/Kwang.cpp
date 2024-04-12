@@ -52,6 +52,8 @@ void AKwang::BeginPlay()
 // Function to handle movement input
 void AKwang::Move(const FInputActionValue& Value)
 {
+	if(ActionState != EActionState::EAS_Unoccupied) return;
+	
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
 	// Get Yaw of Controller Rotator
@@ -79,7 +81,7 @@ void AKwang::Look(const FInputActionValue& Value)
 // Function to handle E key action
 void AKwang::EKeyPressed()
 {
-	if (const AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
+	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
 		//Attaching Weapon to Right Hand Socket
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));

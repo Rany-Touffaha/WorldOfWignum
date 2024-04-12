@@ -14,7 +14,7 @@ class WORLDOFWIGNUM_API AWeapon : public AItem
 
 public:
 	// Function to equip the weapon to a parent scene component at a specific socket
-	void Equip(USceneComponent* InParent, FName InSocketName) const;
+	void Equip(USceneComponent* InParent, FName InSocketName);
 	
 protected:
 	// Override function to handle sphere overlap events

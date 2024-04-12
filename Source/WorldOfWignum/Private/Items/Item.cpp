@@ -71,5 +71,10 @@ void AItem::Tick(float DeltaTime)
 	// Update the running time for the sine and cosine functions
 	RunningTime += DeltaTime;
 
+	// Add sinusodial movement if in hovering state
+	if (ItemState == EItemState::EIS_Hovering)
+	{
+		AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
+	}
 }
 

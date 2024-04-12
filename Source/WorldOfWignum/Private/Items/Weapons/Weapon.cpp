@@ -1,10 +1,11 @@
 #include "Items/Weapons/Weapon.h"
 
 // Function to equip the weapon to a parent scene component at a specific socket
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName) const
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
 	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+	ItemState = EItemState::EIS_Equipped;
 }
 
 // Override function to handle sphere overlap events

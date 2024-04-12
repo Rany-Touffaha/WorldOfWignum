@@ -7,6 +7,12 @@
 //Forward declarations for Item class
 class USphereComponent;
 
+enum class EItemState : uint8
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 /**
  * Item class declaration
  */
@@ -33,6 +39,9 @@ protected:
 	// Static mesh component for the item
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh;
+
+	// State of the item
+	EItemState ItemState = EItemState::EIS_Hovering;
 
 	// Blueprint pure function to calculate transformed sine
 	UFUNCTION(BlueprintPure)
