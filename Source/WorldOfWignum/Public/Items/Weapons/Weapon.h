@@ -13,6 +13,7 @@ class WORLDOFWIGNUM_API AWeapon : public AItem
 	GENERATED_BODY()
 
 public:
+	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
 	// Function to equip the weapon to a parent scene component at a specific socket
 	void Equip(USceneComponent* InParent, FName InSocketName);
 	

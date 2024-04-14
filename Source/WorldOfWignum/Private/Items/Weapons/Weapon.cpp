@@ -1,10 +1,15 @@
 #include "Items/Weapons/Weapon.h"
 
-// Function to equip the weapon to a parent scene component at a specific socket
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const
 {
 	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
+// Function to equip the weapon to a parent scene component at a specific socket
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	AttachMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
 }
 

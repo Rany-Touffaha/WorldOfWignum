@@ -98,11 +98,13 @@ void AKwang::EKeyPressed()
 		{
 			PlayEquipMontage(FName("Unequip"));
 			CharacterState = ECharacterState::ECS_Unequipped;
+			ActionState = EActionState::EAS_EquippingWeapon;
 		}
 		else if (CanArm())
 		{
 			PlayEquipMontage(FName("Equip"));
 			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			ActionState = EActionState::EAS_EquippingWeapon;
 		}
 	}
 }
@@ -165,6 +167,27 @@ bool AKwang::CanArm() const
 	return ActionState == EActionState::EAS_Unoccupied &&
 		CharacterState == ECharacterState::ECS_Unequipped &&
 		EquippedWeapon;
+}
+
+void AKwang::Disarm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon -> AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+}
+
+void AKwang::Arm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon -> AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
+void AKwang::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 // Function to handle attack action
