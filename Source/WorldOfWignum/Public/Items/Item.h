@@ -40,6 +40,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh;
 
+	// Sphere component for the item
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
+
 	// State of the item
 	EItemState ItemState = EItemState::EIS_Hovering;
 
@@ -62,15 +66,12 @@ protected:
 	// Function to handle events when leaving sphere overlap
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	
 private:
 	// Property to track running time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime = 0;
 	
-	// Sphere component for the item
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere;
 };
 
 // Template function to calculate average
