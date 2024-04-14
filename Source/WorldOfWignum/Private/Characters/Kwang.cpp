@@ -88,6 +88,22 @@ void AKwang::EKeyPressed()
 
 		//Change Character state to equipped one-handed
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+
+		OverlappingItem = nullptr;
+		EquippedWeapon = OverlappingWeapon;
+	}
+	else
+	{
+		if(CanDisarm())
+		{
+			PlayEquipMontage(FName("Unequip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+		}
+		if (CanArm())
+		{
+			PlayEquipMontage(FName("Equip"));
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		}
 	}
 }
 
@@ -116,6 +132,16 @@ void AKwang::PlayAttackMontage() const
 	}
 }
 
+void AKwang::PlayEquipMontage(const FName SectionName) const
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+	}
+}
+
 void AKwang::AttackEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
@@ -123,7 +149,22 @@ void AKwang::AttackEnd()
 
 bool AKwang::CanAttack() const
 {
-	return CharacterState != ECharacterState::ECS_Unequipped && ActionState == EActionState::EAS_Unoccupied;
+	return CharacterState != ECharacterState::ECS_Unequipped &&
+		ActionState == EActionState::EAS_Unoccupied;
+}
+
+
+bool AKwang::CanDisarm() const
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool AKwang::CanArm() const
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState == ECharacterState::ECS_Unequipped &&
+		EquippedWeapon;
 }
 
 // Function to handle attack action

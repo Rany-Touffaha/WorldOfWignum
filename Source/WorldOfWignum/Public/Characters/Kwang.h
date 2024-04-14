@@ -13,6 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class AWeapon;
 
 /**
  * Kwang character class declaration
@@ -78,6 +79,10 @@ protected:
 	void AttackEnd();
 	bool CanAttack() const;
 
+	void PlayEquipMontage(FName SectionName) const;
+	bool CanDisarm() const;
+	bool CanArm() const;
+
 private:
 	// Initialise character state to Unequipped
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
@@ -98,12 +103,18 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	/**
 	 *	Animation montages
 	 */
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 	
 public:
 	// Function to set overlapping item
