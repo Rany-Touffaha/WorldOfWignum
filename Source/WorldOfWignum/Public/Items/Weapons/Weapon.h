@@ -25,11 +25,16 @@ public:
 	void Equip(USceneComponent* InParent, FName InSocketName);
 	
 protected:
+	virtual void BeginPlay() override;
+	
 	// Override function to handle sphere overlap events
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 	// Override function to handle events when leaving sphere overlap
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+
+	UFUNCTION()
+	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	// Sound component for equipping weapon
@@ -39,4 +44,10 @@ private:
 	// Box component for detecting collision
 	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
 	UBoxComponent* WeaponBox;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceStart;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* BoxTraceEnd;
 };
