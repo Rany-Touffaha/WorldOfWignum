@@ -5,6 +5,7 @@
 #include "Weapon.generated.h"
 
 class USoundBase;
+class UBoxComponent;
 
 /**
  * Weapon class declaration
@@ -15,6 +16,8 @@ class WORLDOFWIGNUM_API AWeapon : public AItem
 	GENERATED_BODY()
 
 public:
+	AWeapon();
+	
 	// Function to attach an item mesh to a socket
 	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
 	
@@ -32,4 +35,8 @@ private:
 	// Sound component for equipping weapon
 	UPROPERTY(EditAnywhere, Category= "Weapon Properties")
 	USoundBase* EquipSound;
+
+	// Box component for detecting collision
+	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
+	UBoxComponent* WeaponBox;
 };
