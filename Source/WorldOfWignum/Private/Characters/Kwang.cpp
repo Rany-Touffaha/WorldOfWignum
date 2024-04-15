@@ -83,23 +83,26 @@ void AKwang::EKeyPressed()
 {
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
-		//Attaching Weapon to Right Hand Socket
+		// Attaching Weapon to Right Hand Socket
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 
-		//Change Character state to equipped one-handed
+		// Change Character state to equipped one-handed
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 
+		// Make overlapping weapon the equipped weapon
 		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
 	}
 	else
 	{
+		// Check if character can disarm before playing unequip animation
 		if(CanDisarm())
 		{
 			PlayEquipMontage(FName("Unequip"));
 			CharacterState = ECharacterState::ECS_Unequipped;
 			ActionState = EActionState::EAS_EquippingWeapon;
 		}
+		// Check if character can arm before playing equip animation
 		else if (CanArm())
 		{
 			PlayEquipMontage(FName("Equip"));
@@ -109,7 +112,7 @@ void AKwang::EKeyPressed()
 	}
 }
 
-//Function that play the attack montages
+// Function that plays the attack montages
 void AKwang::PlayAttackMontage() const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -134,6 +137,7 @@ void AKwang::PlayAttackMontage() const
 	}
 }
 
+// Function that plays the equip montages
 void AKwang::PlayEquipMontage(const FName SectionName) const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -144,24 +148,27 @@ void AKwang::PlayEquipMontage(const FName SectionName) const
 	}
 }
 
+// Function to change action state to unoccupied at the end of an attack
 void AKwang::AttackEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
+// Function that checks if the character can attack
 bool AKwang::CanAttack() const
 {
 	return CharacterState != ECharacterState::ECS_Unequipped &&
 		ActionState == EActionState::EAS_Unoccupied;
 }
 
-
+// Function that checks if character can disarm 
 bool AKwang::CanDisarm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
 		CharacterState != ECharacterState::ECS_Unequipped;
 }
 
+// Function that checks if character can arm 
 bool AKwang::CanArm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
@@ -169,6 +176,7 @@ bool AKwang::CanArm() const
 		EquippedWeapon;
 }
 
+// Function to attach the weapon to the back of the character
 void AKwang::Disarm()
 {
 	if (EquippedWeapon)
@@ -177,6 +185,7 @@ void AKwang::Disarm()
 	}
 }
 
+// Function to attach the weapon to the right hand of the character
 void AKwang::Arm()
 {
 	if (EquippedWeapon)
@@ -185,6 +194,7 @@ void AKwang::Arm()
 	}
 }
 
+// Function to reset the state to unoccupied when done equipping
 void AKwang::FinishEquipping()
 {
 	ActionState = EActionState::EAS_Unoccupied;

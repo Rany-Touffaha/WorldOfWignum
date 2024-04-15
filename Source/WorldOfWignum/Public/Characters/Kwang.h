@@ -83,12 +83,15 @@ protected:
 	bool CanDisarm() const;
 	bool CanArm() const;
 
+	// Function to attach the weapon to the back of the character
 	UFUNCTION(BlueprintCallable)
 	void Disarm();
 
+	// Function to attach the weapon to the right hand of the character
 	UFUNCTION(BlueprintCallable)
 	void Arm();
 
+	// Function to reset the state to unoccupied when done equipping
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 
@@ -112,6 +115,7 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
+	// Variable storing current equipped weapon
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
 

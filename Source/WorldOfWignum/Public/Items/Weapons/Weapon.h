@@ -15,7 +15,9 @@ class WORLDOFWIGNUM_API AWeapon : public AItem
 	GENERATED_BODY()
 
 public:
+	// Function to attach an item mesh to a socket
 	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
+	
 	// Function to equip the weapon to a parent scene component at a specific socket
 	void Equip(USceneComponent* InParent, FName InSocketName);
 	
@@ -27,6 +29,7 @@ protected:
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 private:
+	// Sound component for equipping weapon
 	UPROPERTY(EditAnywhere, Category= "Weapon Properties")
 	USoundBase* EquipSound;
 };

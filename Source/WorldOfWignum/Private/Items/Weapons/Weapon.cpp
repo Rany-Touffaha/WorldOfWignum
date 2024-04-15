@@ -2,6 +2,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 
+// Function to attach an item mesh to a socket
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const
 {
 	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
