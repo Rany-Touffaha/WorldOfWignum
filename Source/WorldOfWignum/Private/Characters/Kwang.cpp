@@ -139,7 +139,7 @@ void AKwang::PlayAttackMontage() const
 }
 
 // Function that plays the equip montages
-void AKwang::PlayEquipMontage(const FName SectionName) const
+void AKwang::PlayEquipMontage(const FName& SectionName) const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && EquipMontage)
