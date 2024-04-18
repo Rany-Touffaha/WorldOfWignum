@@ -194,6 +194,7 @@ Content/**/MedievalDungeon
 Content/**/AnimalVarietyPack
 Content/**/ParagonKwang
 Content/**/InfinityBladeWeapons
+Content/**/ParagonMinions
 
 ### UnrealEngine Patch ###
 # Don't ignore icon and splash images for mobile app
