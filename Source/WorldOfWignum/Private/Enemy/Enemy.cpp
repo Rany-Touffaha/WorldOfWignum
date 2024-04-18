@@ -44,10 +44,8 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AEnemy::GetHit(const FVector& ImpactPoint)
+void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
 {
-	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
-	
 	const FVector Forward = GetActorForwardVector();
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
@@ -56,10 +54,10 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	double Theta = FMath::Acos(CosTheta);
 	Theta = FMath::RadiansToDegrees(Theta);
 
-	const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
-	if (CrossProduct.Z < 0)
+	if (const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit); CrossProduct.Z < 0)
 	{
 		Theta *= -1.f;
+		UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(),GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 	}
 
 	FName Section("FromBack");
@@ -79,10 +77,14 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 
 	PlayHitReactMontage(Section);
 	
-
-	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(),GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
-	
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(),GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+}
+
+void AEnemy::GetHit(const FVector& ImpactPoint)
+{
+	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
+	
+	DirectionalHitReact(ImpactPoint);
 }
 

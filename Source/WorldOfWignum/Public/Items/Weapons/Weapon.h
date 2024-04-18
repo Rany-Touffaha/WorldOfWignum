@@ -23,6 +23,8 @@ public:
 	
 	// Function to equip the weapon to a parent scene component at a specific socket
 	void Equip(USceneComponent* InParent, FName InSocketName);
+
+	TArray<AActor*> IgnoreActors;
 	
 protected:
 	virtual void BeginPlay() override;
