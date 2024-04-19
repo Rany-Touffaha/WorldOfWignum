@@ -3,36 +3,26 @@
 #include "Enemy/Enemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "WorldOfWignum/DebugMacros.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
+/**
+ * Enemy class constructor
+ */
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Set collision types for different components in the enemy class
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
-	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-	
 }
 
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void AEnemy::PlayHitReactMontage(const FName& SectionName) const
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && HitReactMontage)
-	{
-		AnimInstance->Montage_Play(HitReactMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
-	}
 }
 
 void AEnemy::Tick(float DeltaTime)
@@ -45,22 +35,36 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+// Function that plays the hit react montages
+void AEnemy::PlayHitReactMontage(const FName& SectionName) const
+{
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && HitReactMontage)
+	{
+		AnimInstance->Montage_Play(HitReactMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
+	}
+}
+
+// Function that handles which direction the enemy moves when getting hit
 void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
 {
+	// Calculate the forward and hit vectors 
 	const FVector Forward = GetActorForwardVector();
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
 	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
 
+	// Calculate the dot product of the forward and hit vectors 
 	const double CosTheta = FVector::DotProduct(Forward, ToHit);
 	double Theta = FMath::Acos(CosTheta);
 	Theta = FMath::RadiansToDegrees(Theta);
 
+	// Determine the orientation of the angle based on the cross product
 	if (const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit); CrossProduct.Z < 0)
 	{
 		Theta *= -1.f;
-		//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(),GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
 	}
 
+	// Determine which quadrant based on the angle theta
 	FName Section("FromBack");
 
 	if (Theta >= -45.f && Theta < 45.f)
@@ -77,15 +81,11 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
 	}
 
 	PlayHitReactMontage(Section);
-	
-	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(),GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
-	//UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 }
 
+// Function that handles enemy reaction when getting hit
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
-	//DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
-	
 	DirectionalHitReact(ImpactPoint);
 
 	if(HitSound)

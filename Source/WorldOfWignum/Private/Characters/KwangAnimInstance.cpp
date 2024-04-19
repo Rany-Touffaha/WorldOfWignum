@@ -1,9 +1,11 @@
+// World of Wignum by Rany Touffaha
+
 #include "Characters/KwangAnimInstance.h"
 #include "Characters/Kwang.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
-
+// Initialise animation instance
 void UKwangAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -17,6 +19,7 @@ void UKwangAnimInstance::NativeInitializeAnimation()
 	}
 }
 
+// Update animation instance every frame
 void UKwangAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);

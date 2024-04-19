@@ -1,3 +1,5 @@
+// World of Wignum by Rany Touffaha
+
 #pragma once
 
 #include "CoreMinimal.h"

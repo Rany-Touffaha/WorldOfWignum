@@ -1,3 +1,5 @@
+// World of Wignum by Rany Touffaha
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -6,7 +8,7 @@
 #include "CharacterTypes.h"
 #include "Kwang.generated.h"
 
-//Forward declarations for Kwang class
+// Forward declarations for Kwang class
 class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
@@ -30,8 +32,9 @@ public:
 	// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Set weapon collision depending on which momenent the character is attacking
 	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -43,7 +46,6 @@ protected:
 	/**
 	 *	Input Actions
 	 */
-	
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* MovementAction;
 
@@ -65,7 +67,6 @@ protected:
 	/**
 	 *	Callback functions for input
 	 */
-	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void EKeyPressed();
@@ -73,18 +74,21 @@ protected:
 	void Dodge();
 
 	/**
-	 *	Play montage functions
+	 *	Play attack montage functions
 	 */
-
 	void PlayAttackMontage() const;
-
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
 	bool CanAttack() const;
 
+	/**
+	 *	Play equip montage functions
+	 */
 	void PlayEquipMontage(const FName& SectionName) const;
 	bool CanDisarm() const;
 	bool CanArm() const;
+	
+	// Function to change action state to unoccupied at the end of an attack
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 
 	// Function to attach the weapon to the back of the character
 	UFUNCTION(BlueprintCallable)
@@ -125,7 +129,6 @@ private:
 	/**
 	 *	Animation montages
 	 */
-
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
 

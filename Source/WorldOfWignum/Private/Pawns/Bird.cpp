@@ -1,3 +1,5 @@
+// World of Wignum by Rany Touffaha
+
 #include "Pawns/Bird.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -7,7 +9,7 @@
 #include "EnhancedInputComponent.h"
 
 /**
- * Bird class constructor
+ * Bird class declaration
  */
 ABird::ABird()
 {
@@ -34,6 +36,11 @@ ABird::ABird()
 
 	// Auto possess this pawn by Player0
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+}
+
+void ABird::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void ABird::BeginPlay()
@@ -71,11 +78,6 @@ void ABird::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
 	}
-}
-
-void ABird::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input

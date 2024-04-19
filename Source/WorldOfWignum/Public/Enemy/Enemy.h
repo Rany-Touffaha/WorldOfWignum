@@ -9,6 +9,9 @@
 
 class UAnimMontage;
 
+/**
+ * Enemy class declaration
+ */
 UCLASS()
 class WORLDOFWIGNUM_API AEnemy : public ACharacter, public IHitInterface
 {
@@ -19,17 +22,19 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// Function that handles which direction the enemy moves when getting hit
 	void DirectionalHitReact(const FVector& ImpactPoint) const;
 
+	// Function that handles enemy reaction when getting hit
 	virtual void GetHit(const FVector& ImpactPoint) override;
 
 protected:
 	virtual void BeginPlay() override;
 
 	/**
-	 *	Play montage functions
+	 *	Hit react montage functions
 	 */
-
 	void PlayHitReactMontage(const FName& SectionName) const;
 	
 private:
@@ -37,10 +42,12 @@ private:
 	/**
 	 *	Animation montages
 	 */
-
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	/**
+	 *	Sound and particle variables when getting hit
+	 */
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* HitSound;
 

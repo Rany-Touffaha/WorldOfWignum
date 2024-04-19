@@ -1,9 +1,12 @@
+// World of Wignum by Rany Touffaha
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
+//Forward declarations for Weapon class
 class USoundBase;
 class UBoxComponent;
 
@@ -24,6 +27,7 @@ public:
 	// Function to equip the weapon to a parent scene component at a specific socket
 	void Equip(USceneComponent* InParent, FName InSocketName);
 
+	// List of actors to ignore in the box trace
 	TArray<AActor*> IgnoreActors;
 	
 protected:
@@ -47,12 +51,15 @@ private:
 	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
 	UBoxComponent* WeaponBox;
 
+	// Component to mark the start of the box trace
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceStart;
 
+	// Component to mark the end of the box trace
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
 
 public:
+	// Function to get weapon box component
 	FORCEINLINE UBoxComponent* GetWeaponBox() const {return WeaponBox; }
 };

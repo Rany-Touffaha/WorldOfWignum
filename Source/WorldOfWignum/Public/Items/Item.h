@@ -1,3 +1,5 @@
+// World of Wignum by Rany Touffaha
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,6 +9,9 @@
 //Forward declarations for Item class
 class USphereComponent;
 
+/**
+ * Enum class declaration for item states
+ */
 enum class EItemState : uint8
 {
 	EIS_Hovering,

@@ -1,9 +1,12 @@
+// World of Wignum by Rany Touffaha
+
 #include "Items/Item.h"
-#include "WorldOfWignum/DebugMacros.h"
 #include "Components/SphereComponent.h"
 #include "Characters/Kwang.h"
 
-//Item class constructor
+/**
+ * Item class constructor
+ */
 AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;

@@ -1,3 +1,5 @@
+// World of Wignum by Rany Touffaha
+
 #include "Characters/Kwang.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
@@ -10,7 +12,9 @@
 #include "Animation/AnimMontage.h"
 #include "Components/BoxComponent.h"
 
-// Kwang character class constructor
+/**
+ * Kwang character class constructor
+ */
 AKwang::AKwang()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -53,15 +57,15 @@ void AKwang::BeginPlay()
 // Function to handle movement input
 void AKwang::Move(const FInputActionValue& Value)
 {
+	// Check of action state is unoccupied before moving
 	if(ActionState != EActionState::EAS_Unoccupied) return;
 	
-	const FVector2D MovementVector = Value.Get<FVector2D>();
-
 	// Get Yaw of Controller Rotator
 	const FRotator ControlRotation = GetControlRotation();
 	const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
 
 	// Add Movement for character to move forward and backward
+	const FVector2D MovementVector = Value.Get<FVector2D>();
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	AddMovementInput(ForwardDirection, MovementVector.Y);
 
@@ -141,8 +145,7 @@ void AKwang::PlayAttackMontage() const
 // Function that plays the equip montages
 void AKwang::PlayEquipMontage(const FName& SectionName) const
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && EquipMontage)
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && EquipMontage)
 	{
 		AnimInstance->Montage_Play(EquipMontage);
 		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
@@ -211,7 +214,8 @@ void AKwang::Attack()
 	}
 }
 
-void AKwang::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+// Set weapon collision depending on which momenent the character is attacking
+void AKwang::SetWeaponCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled) const
 {
 	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
 	{
