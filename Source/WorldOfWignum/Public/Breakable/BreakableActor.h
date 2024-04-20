@@ -7,8 +7,12 @@
 #include "Interfaces/HitInterface.h"
 #include "BreakableActor.generated.h"
 
+//Forward declarations for BreakableActor class
 class UGeometryCollectionComponent;
 
+/**
+ * Breakable Actor class declaration
+ */
 UCLASS()
 class WORLDOFWIGNUM_API ABreakableActor : public AActor, public IHitInterface
 {
@@ -25,6 +29,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	
+	// Geometric Collection Component for breakable objects
 	UPROPERTY(VisibleAnywhere)
 	UGeometryCollectionComponent* GeometryCollection;
 };

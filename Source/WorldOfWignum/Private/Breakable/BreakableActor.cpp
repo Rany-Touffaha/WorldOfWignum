@@ -3,6 +3,9 @@
 #include "Breakable/BreakableActor.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 
+/**
+ * Breakable Actor class constructor
+ */
 ABreakableActor::ABreakableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -26,6 +29,6 @@ void ABreakableActor::Tick(float DeltaTime)
 
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	
+	// Function called in blueprint
 }
 

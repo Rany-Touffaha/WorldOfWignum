@@ -7,6 +7,7 @@
 #include "Interfaces/HitInterface.h"
 #include "Enemy.generated.h"
 
+//Forward declarations for Enemy class
 class UAnimMontage;
 
 /**
