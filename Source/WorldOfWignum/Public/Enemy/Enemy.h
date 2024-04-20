@@ -27,7 +27,7 @@ public:
 	void DirectionalHitReact(const FVector& ImpactPoint) const;
 
 	// Function that handles enemy reaction when getting hit
-	virtual void GetHit(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 
 protected:
 	virtual void BeginPlay() override;

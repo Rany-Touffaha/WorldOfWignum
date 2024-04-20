@@ -118,7 +118,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	{
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
 		{
-			HitInterface->GetHit(BoxHit.ImpactPoint);
+			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
 		}
 
 		// Add what has been hit to the list of actors are ignored
