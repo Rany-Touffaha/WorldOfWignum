@@ -123,5 +123,8 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 		// Add what has been hit to the list of actors are ignored
 		IgnoreActors.AddUnique(BoxHit.GetActor());
+
+		// Call the force field at the impact point
+		CreateFields(BoxHit.ImpactPoint);
 	}
 }
