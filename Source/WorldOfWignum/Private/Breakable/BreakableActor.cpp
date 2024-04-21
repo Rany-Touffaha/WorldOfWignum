@@ -14,7 +14,7 @@ ABreakableActor::ABreakableActor()
 	SetRootComponent(GeometryCollection);
 	
 	GeometryCollection->SetGenerateOverlapEvents(true);
-	GeometryCollection->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECR_Ignore);
+	GeometryCollection->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 void ABreakableActor::BeginPlay()
