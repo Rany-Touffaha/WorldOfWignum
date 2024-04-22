@@ -7,8 +7,11 @@
 #include "Interfaces/HitInterface.h"
 #include "BreakableActor.generated.h"
 
+
+class UCapsuleComponent;
 //Forward declarations for BreakableActor class
 class UGeometryCollectionComponent;
+class ATreasure;
 
 /**
  * Breakable Actor class declaration
@@ -28,9 +31,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// Geometric Collection Component for breakable objects
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UGeometryCollectionComponent* GeometryCollection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UCapsuleComponent* Capsule;
+
 private:
 	
-	// Geometric Collection Component for breakable objects
-	UPROPERTY(VisibleAnywhere)
-	UGeometryCollectionComponent* GeometryCollection;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ATreasure> TreasureClass;
 };

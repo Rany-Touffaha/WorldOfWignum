@@ -7,7 +7,7 @@
 #include "Treasure.generated.h"
 
 /**
- * 
+ *  Treasure class declaration
  */
 UCLASS()
 class WORLDOFWIGNUM_API ATreasure : public AItem
