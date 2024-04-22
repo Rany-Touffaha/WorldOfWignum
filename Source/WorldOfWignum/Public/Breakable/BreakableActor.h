@@ -39,6 +39,8 @@ protected:
 	UCapsuleComponent* Capsule;
 
 private:
+
+	bool bBroken = false;
 	
 	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
 	TArray<TSubclassOf<ATreasure>> TreasureClassArray;
