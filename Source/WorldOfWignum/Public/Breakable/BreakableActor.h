@@ -40,6 +40,6 @@ protected:
 
 private:
 	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ATreasure> TreasureClass;
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	TArray<TSubclassOf<ATreasure>> TreasureClassArray;
 };

@@ -22,4 +22,7 @@ private:
 	// Sound component for picking up treasure
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* PickupSound;
+
+	UPROPERTY(EditAnywhere, Category = "Treasure Properties")
+	int32 Gold;
 };

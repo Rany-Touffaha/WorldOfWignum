@@ -38,11 +38,14 @@ void ABreakableActor::Tick(float DeltaTime)
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	UWorld* World = GetWorld();
-	if(World && TreasureClass)
+	if(World && TreasureClassArray.Num() > 0 )
 	{
 		FVector Location = GetActorLocation();
 		Location.Z += 75.f;
-		World->SpawnActor<ATreasure>(TreasureClass, Location, GetActorRotation(), FActorSpawnParameters());
+
+		const int32 Selection = FMath::RandRange(0, TreasureClassArray.Num() - 1);
+		
+		World->SpawnActor<ATreasure>(TreasureClassArray[Selection], Location, GetActorRotation(), FActorSpawnParameters());
 	}
 	
 }
