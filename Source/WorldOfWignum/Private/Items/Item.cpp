@@ -3,6 +3,7 @@
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
 #include "Characters/Kwang.h"
+#include "NiagaraComponent.h"
 
 /**
  * Item class constructor
@@ -11,15 +12,17 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create a default sub-object for the item's mesh
+	// Create a default sub-object for the item's mesh component and attach it to the root
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
-
-	// Set the root component to the item's mesh
 	RootComponent = ItemMesh;
 
 	// Create a default sub-object for the sphere component and attach it to the root
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
+
+	// Create a default sub-object for the Niagara component and attach it to the root
+	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
+	EmbersEffect->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()

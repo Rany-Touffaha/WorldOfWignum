@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Interfaces/HitInterface.h"
+#include "NiagaraComponent.h"
 
 /**
  * Weapon class constructor
@@ -70,6 +71,12 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 	if (Sphere)
 	{
 		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	// Disable Niagara effect once the weapon is picked up
+	if (EmbersEffect)
+	{
+		EmbersEffect->Deactivate();
 	}
 }
 
