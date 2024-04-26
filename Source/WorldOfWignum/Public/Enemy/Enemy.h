@@ -10,6 +10,8 @@
 //Forward declarations for Enemy class
 class UAnimMontage;
 class UAttributeComponent;
+class UWidgetComponent;
+
 
 /**
  * Enemy class declaration
@@ -43,6 +45,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
+
+	UPROPERTY(VisibleAnywhere)
+	UWidgetComponent* HealthBarWidget;
 
 	/**
 	 *	Animation montages
