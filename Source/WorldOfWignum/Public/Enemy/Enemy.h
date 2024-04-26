@@ -9,6 +9,7 @@
 
 //Forward declarations for Enemy class
 class UAnimMontage;
+class UAttributeComponent;
 
 /**
  * Enemy class declaration
@@ -39,6 +40,9 @@ protected:
 	void PlayHitReactMontage(const FName& SectionName) const;
 	
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
 
 	/**
 	 *	Animation montages
