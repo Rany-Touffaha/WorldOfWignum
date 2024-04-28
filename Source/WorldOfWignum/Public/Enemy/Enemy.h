@@ -39,6 +39,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void Die();
+	
 	/**
 	 *	Hit react montage functions
 	 */
@@ -58,6 +60,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* DeathMontage;
+	
 	/**
 	 *	Sound and particle variables when getting hit
 	 */
