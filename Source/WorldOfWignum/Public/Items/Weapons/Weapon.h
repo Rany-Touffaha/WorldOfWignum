@@ -25,7 +25,7 @@ public:
 	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
 	
 	// Function to equip the weapon to a parent scene component at a specific socket
-	void Equip(USceneComponent* InParent, FName InSocketName);
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
 
 	// List of actors to ignore in the box trace
 	TArray<AActor*> IgnoreActors;
@@ -55,7 +55,10 @@ private:
 	// Box component for detecting collision
 	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
 	UBoxComponent* WeaponBox;
-
+	
+	UPROPERTY(EditAnywhere, Category= "Weapon Properties")
+	float Damage = 20.f;
+	
 	// Component to mark the start of the box trace
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceStart;

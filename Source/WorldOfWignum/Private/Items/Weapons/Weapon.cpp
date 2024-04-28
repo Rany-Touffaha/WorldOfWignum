@@ -53,8 +53,11 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) 
 }
 
 // Function to equip the weapon to a parent scene component at a specific socket
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
+	
 	// Attach mesh to a socket
 	AttachMeshToSocket(InParent, InSocketName);
 
@@ -133,5 +136,13 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 		// Call the force field at the impact point
 		CreateFields(BoxHit.ImpactPoint);
+
+		UGameplayStatics::ApplyDamage(
+			BoxHit.GetActor(),
+			Damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }

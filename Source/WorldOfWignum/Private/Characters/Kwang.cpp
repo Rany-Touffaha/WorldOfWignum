@@ -89,8 +89,8 @@ void AKwang::EKeyPressed()
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
 		// Attaching Weapon to Right Hand Socket
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
-
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+		
 		// Change Character state to equipped one-handed
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 
