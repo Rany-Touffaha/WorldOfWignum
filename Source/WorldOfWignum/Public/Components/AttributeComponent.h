@@ -7,7 +7,7 @@
 #include "AttributeComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class WORLDOFWIGNUM_API UAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
