@@ -24,5 +24,4 @@ void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 		// Destroy the treasure when picked up
 		Destroy();
 	}
-	
 }

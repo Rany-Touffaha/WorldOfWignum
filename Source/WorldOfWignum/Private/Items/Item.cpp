@@ -34,13 +34,13 @@ void AItem::BeginPlay()
 	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
 }
 
-//Transforms Sin function using Amplitude and TimeConstant
+// Transforms Sin function using Amplitude and TimeConstant
 float AItem::TransformedSin() const
 {
 	return Amplitude* FMath::Sin(RunningTime * TimeConstant);
 }
 
-//Transforms Cos function using Amplitude and TimeConstant
+// Transforms Cos function using Amplitude and TimeConstant
 float AItem::TransformedCos() const
 {
 	return Amplitude* FMath::Cos(RunningTime * TimeConstant);;

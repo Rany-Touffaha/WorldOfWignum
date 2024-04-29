@@ -21,6 +21,7 @@ class WORLDOFWIGNUM_API IHitInterface
 	GENERATED_BODY()
 
 public:
+	// Function declaration for the object getting hit
 	UFUNCTION(BlueprintNativeEvent)
 	void GetHit(const FVector& ImpactPoint);
 };

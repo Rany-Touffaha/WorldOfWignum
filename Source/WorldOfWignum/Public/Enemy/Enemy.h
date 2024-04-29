@@ -8,11 +8,10 @@
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
-//Forward declarations for Enemy class
+// Forward declarations for Enemy class
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
-
 
 /**
  * Enemy class declaration
@@ -24,7 +23,6 @@ class WORLDOFWIGNUM_API AEnemy : public ACharacter, public IHitInterface
 
 public:
 	AEnemy();
-
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -34,27 +32,39 @@ public:
 	// Function that handles enemy reaction when getting hit
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 
+	// Function that makes enemy take damage when getting hit
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-
 
 protected:
 	virtual void BeginPlay() override;
 
+	// Function called when the enemy dies
 	void Die();
 	
 	/**
 	 *	Hit react montage functions
 	 */
 	void PlayHitReactMontage(const FName& SectionName) const;
-	
+
+	// Initialise enemy death pose to Alive
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 	
 private:
 
+	// Variable storing which actor is the target for combat
+	UPROPERTY()
+	AActor* CombatTarget;
+
+	// Distance from character that the enemy requires to start combat 
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
+
+	// Variable storing attribute component
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
+	// Variable storing health bar widget
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
@@ -75,10 +85,4 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Visual Effects")
 	UParticleSystem* HitParticles;
-
-	UPROPERTY()
-	AActor* CombatTarget;
-
-	UPROPERTY(EditAnywhere)
-	double CombatRadius = 500.f;
 };

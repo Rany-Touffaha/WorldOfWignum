@@ -21,8 +21,10 @@ AEnemy::AEnemy()
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
+	// Set up the attribute compnent 
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 
+	// Set up the view health bar widget
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 }
@@ -30,14 +32,18 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Initially hide enemy health bar
 	if (HealthBarWidget)
 	{
 		HealthBarWidget->SetVisibility(false);
 	}
 }
 
+// Function called when the enemy dies
 void AEnemy::Die()
 {
+	// Plays death montages randomly
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && DeathMontage)
 	{
 		AnimInstance->Montage_Play(DeathMontage);
@@ -78,11 +84,17 @@ void AEnemy::Die()
 		
 		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 	}
+
+	// Hides enemy health bar when dead
 	if(HealthBarWidget)
 	{
 		HealthBarWidget->SetVisibility(false);
 	}
+
+	// Disable enemy capsule when dead
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Remove enemy from world when dead
 	SetLifeSpan(3.f);
 }
 
@@ -92,7 +104,10 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (CombatTarget)
 	{
+		// Calculate the distance between enenmy and character
 		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
+
+		// Disable health bar and remove combat target if the character is too far
 		if (DistanceToTarget > CombatRadius)
 		{
 			CombatTarget = nullptr;
@@ -160,11 +175,13 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
 // Function that handles enemy reaction when getting hit
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
+	// Enable enemy health bar when getting hit
 	if (HealthBarWidget)
 	{
 		HealthBarWidget->SetVisibility(true);
 	}
-	
+
+	// Enemy gets hit by weapon, dies otherwise
 	if (Attributes && Attributes->IsAlive())
 	{
 		DirectionalHitReact(ImpactPoint);
@@ -174,7 +191,7 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 		Die();
 	}
 	
-
+	// Plays sound if gets hit
 	if(HitSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(
@@ -184,6 +201,7 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 		);
 	}
 
+	// Spawn blood particles effect when getting hit
 	if(HitParticles && GetWorld())
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(
@@ -194,14 +212,18 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 	}
 }
 
+// Function that makes enemy take damage when getting hit
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if(Attributes && HealthBarWidget)
 	{
 		Attributes->ReceiveDamage(DamageAmount);
+
+		// Update health bar widget after getting hit
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
 	}
-	
+
+	// Set the combat target when getting attacked
 	CombatTarget = EventInstigator->GetPawn();
 	
 	return DamageAmount;

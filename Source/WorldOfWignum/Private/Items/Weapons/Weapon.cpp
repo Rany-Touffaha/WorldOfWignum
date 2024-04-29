@@ -13,14 +13,12 @@
  */
 AWeapon::AWeapon()
 {
-	// Create a box component and attach it to the root
+	// Create a box component and set up collsion responses
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
 	WeaponBox->SetupAttachment(GetRootComponent());
-
-	// Set collision of the box component
 	WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	WeaponBox->SetCollisionResponseToAllChannels(ECR_Overlap);
+	WeaponBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
 	// Create the start component of the box trace
 	BoxTraceStart = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace Start"));
@@ -29,7 +27,6 @@ AWeapon::AWeapon()
 	// Create the end component of the box trace
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
-	
 }
 
 void AWeapon::BeginPlay()
@@ -55,13 +52,14 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) 
 // Function to equip the weapon to a parent scene component at a specific socket
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	// Set owner and instigator
 	SetOwner(NewOwner);
 	SetInstigator(NewInstigator);
 	
 	// Attach mesh to a socket
 	AttachMeshToSocket(InParent, InSocketName);
 
-	//Set the Item State to equipped
+	// Set the Item State to equipped
 	ItemState = EItemState::EIS_Equipped;
 
 	// Play sound when equipping
@@ -133,7 +131,8 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 			this,
 			UDamageType::StaticClass()
 		);
-		
+
+		// Execute get hit if the actor is valid
 		if(IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
 		{
 			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);

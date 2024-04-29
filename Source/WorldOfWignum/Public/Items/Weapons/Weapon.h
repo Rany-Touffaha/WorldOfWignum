@@ -6,7 +6,7 @@
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
-//Forward declarations for Weapon class
+// Forward declarations for Weapon class
 class USoundBase;
 class UBoxComponent;
 
@@ -56,9 +56,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category= "Weapon Properties")
 	UBoxComponent* WeaponBox;
 	
-	UPROPERTY(EditAnywhere, Category= "Weapon Properties")
-	float Damage = 20.f;
-	
 	// Component to mark the start of the box trace
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceStart;
@@ -67,7 +64,11 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
 
+	// Amount of damage the weapon makes
+	UPROPERTY(EditAnywhere, Category= "Weapon Properties")
+	float Damage = 20.f;
+
 public:
-	// Function to get weapon box component
+	// Getter for weapon box component
 	FORCEINLINE UBoxComponent* GetWeaponBox() const {return WeaponBox; }
 };

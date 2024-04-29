@@ -6,7 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "AttributeComponent.generated.h"
 
-
+/**
+ * Attribute Component class declaration
+ */
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class WORLDOFWIGNUM_API UAttributeComponent : public UActorComponent
 {
@@ -22,15 +24,19 @@ protected:
 private:
 	// Current Health
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	float Health;
+	float Health = 100;
 
 	// Maximum Health
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	float MaxHealth;
+	float MaxHealth = 100;
 
 public:
+	// Reduces health from bound object
 	void ReceiveDamage(float Damage);
+
+	// Getter for health percentage
 	float GetHealthPercent() const;
+
+	// Check if character's health is above 0
 	bool IsAlive() const;
-	
 };

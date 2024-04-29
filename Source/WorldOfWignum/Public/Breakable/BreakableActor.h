@@ -8,11 +8,11 @@
 #include "BreakableActor.generated.h"
 
 
-class UCapsuleComponent;
-//Forward declarations for BreakableActor class
+// Forward declarations for BreakableActor class
 class UGeometryCollectionComponent;
 class ATreasure;
-
+class UCapsuleComponent;
+ 
 /**
  * Breakable Actor class declaration
  */
@@ -35,13 +35,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UGeometryCollectionComponent* GeometryCollection;
 
+	// Capsule component for breakable objects
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* Capsule;
 
 private:
-
+	// Check if object is broken
 	bool bBroken = false;
-	
+
+	// List of treasures inside the breakable object
 	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
 	TArray<TSubclassOf<ATreasure>> TreasureClassArray;
 };

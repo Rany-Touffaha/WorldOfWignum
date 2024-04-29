@@ -12,13 +12,14 @@ ABreakableActor::ABreakableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Create geometry collection component and set up its collision responses
 	GeometryCollection = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeomtryCollection"));
 	SetRootComponent(GeometryCollection);
-	
 	GeometryCollection->SetGenerateOverlapEvents(true);
 	GeometryCollection->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GeometryCollection->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
+	// Create capsule component and set up its collision responses
 	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
 	Capsule->SetupAttachment(GetRootComponent());
 	Capsule->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -35,6 +36,7 @@ void ABreakableActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// Function that handles breakable item reaction when getting hit
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	if (bBroken) return;
@@ -45,8 +47,8 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 		FVector Location = GetActorLocation();
 		Location.Z += 75.f;
 
+		// Show a treasure from the list when broken
 		const int32 Selection = FMath::RandRange(0, TreasureClassArray.Num() - 1);
-		
 		World->SpawnActor<ATreasure>(TreasureClassArray[Selection], Location, GetActorRotation(), FActorSpawnParameters());
 	}
 	

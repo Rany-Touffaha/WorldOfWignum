@@ -107,6 +107,7 @@ void AKwang::EKeyPressed()
 			CharacterState = ECharacterState::ECS_Unequipped;
 			ActionState = EActionState::EAS_EquippingWeapon;
 		}
+		
 		// Check if character can arm before playing equip animation
 		else if (CanArm())
 		{
