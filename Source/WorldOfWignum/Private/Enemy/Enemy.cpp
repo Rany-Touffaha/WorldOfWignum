@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AttributeComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
 
 /**
@@ -27,6 +28,15 @@ AEnemy::AEnemy()
 	// Set up the view health bar widget
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
+
+	// Make enemy rotate towards our movement
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// Remove inheritance of Enemy's class rotation from the Controller
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	
 }
 
 void AEnemy::BeginPlay()
