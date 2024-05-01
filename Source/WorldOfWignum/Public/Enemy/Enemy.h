@@ -8,6 +8,7 @@
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
+class AAIController;
 // Forward declarations for Enemy class
 class UAnimMontage;
 class UAttributeComponent;
@@ -68,6 +69,20 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
+	/**
+	 * Navigation
+	 */
+
+	UPROPERTY()
+	AAIController* EnemyController;
+	
+	// Current patrol target
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	AActor* PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*> PatrolTargets;
+	
 	/**
 	 *	Animation montages
 	 */
