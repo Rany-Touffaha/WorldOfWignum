@@ -41,6 +41,8 @@ protected:
 
 	// Function called when the enemy dies
 	void Die();
+
+	bool InTargetRange(const AActor* Target, double Radius) const;
 	
 	/**
 	 *	Hit react montage functions
@@ -82,6 +84,10 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
+
+	// Distance from target that the enemy requires to patrol 
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;
 	
 	/**
 	 *	Animation montages

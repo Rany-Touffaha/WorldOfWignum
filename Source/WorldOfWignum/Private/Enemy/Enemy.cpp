@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "WorldOfWignum/DebugMacros.h"
 
 /**
  * Enemy class constructor
@@ -38,7 +39,6 @@ AEnemy::AEnemy()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
 }
 
 void AEnemy::BeginPlay()
@@ -64,6 +64,52 @@ void AEnemy::BeginPlay()
 		{
 			const FVector& Location = Point.Location;
 			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
+		}
+	}
+}
+
+void AEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (CombatTarget)
+	{
+		// Disable health bar and remove combat target if the character is too far
+		if (!InTargetRange(CombatTarget, CombatRadius))
+		{
+			CombatTarget = nullptr;
+			if(HealthBarWidget)
+			{
+				HealthBarWidget->SetVisibility(false);
+			}
+		}
+	}
+	
+	if(PatrolTarget && EnemyController)
+	{
+		if (InTargetRange(PatrolTarget, PatrolRadius))
+		{
+			TArray<AActor*> ValidTargets;
+			for (AActor* Target : PatrolTargets)
+			{
+				if(Target != PatrolTarget)
+				{
+					ValidTargets.AddUnique(Target);
+				}
+			}
+			
+			const int32 NumPatrolTargets = ValidTargets.Num();
+			if (NumPatrolTargets > 0)
+			{
+				const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets -1);
+				AActor* Target = ValidTargets[TargetSelection];
+				PatrolTarget = Target;
+				
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalActor(PatrolTarget);
+				MoveRequest.SetAcceptanceRadius(15.f);
+				EnemyController->MoveTo(MoveRequest);
+			}
 		}
 	}
 }
@@ -126,25 +172,13 @@ void AEnemy::Die()
 	SetLifeSpan(3.f);
 }
 
-void AEnemy::Tick(float DeltaTime)
+bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const
 {
-	Super::Tick(DeltaTime);
-
-	if (CombatTarget)
-	{
-		// Calculate the distance between enenmy and character
-		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
-
-		// Disable health bar and remove combat target if the character is too far
-		if (DistanceToTarget > CombatRadius)
-		{
-			CombatTarget = nullptr;
-			if(HealthBarWidget)
-			{
-				HealthBarWidget->SetVisibility(false);
-			}
-		}
-	}
+	// Calculate the distance between enenmy and target actor
+	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
+	DRAW_SPHERE_SINGLE_FRAME(GetActorLocation());
+	DRAW_SPHERE_SINGLE_FRAME(Target->GetActorLocation());
+	return DistanceToTarget <= Radius;
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
