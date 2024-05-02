@@ -8,11 +8,13 @@
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
-class AAIController;
+
 // Forward declarations for Enemy class
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
+class UPawnSensingComponent;
+class AAIController;
 
 /**
  * Enemy class declaration
@@ -53,6 +55,9 @@ protected:
 	void CheckPatrolTarget();
 	
 	void CheckCombatTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
 	
 	/**
 	 *	Hit react montage functions
@@ -81,6 +86,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
+	
 	/**
 	 * Navigation
 	 */

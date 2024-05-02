@@ -228,7 +228,7 @@ void AKwang::SetWeaponCollisionEnabled(const ECollisionEnabled::Type CollisionEn
 // Function to handle dodge action
 void AKwang::Dodge()
 {
-	
+	// TODO: Implement dodging mechanic
 }
 
 void AKwang::Tick(float DeltaTime)

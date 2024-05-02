@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "Perception/PawnSensingComponent.h"
 #include "WorldOfWignum/DebugMacros.h"
 
 /**
@@ -39,6 +40,10 @@ AEnemy::AEnemy()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 4000.f;
+	PawnSensing->SetPeripheralVisionAngle(45.f);
 }
 
 void AEnemy::BeginPlay()
@@ -49,6 +54,11 @@ void AEnemy::BeginPlay()
 	ToggleHealthBarWidget(false);
 	EnemyController = Cast<AAIController>(GetController());
 	MoveToTarget(PatrolTarget);
+
+	if(PawnSensing)
+	{
+		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
+	}
 }
 
 void AEnemy::Tick(float DeltaTime)
@@ -74,6 +84,11 @@ void AEnemy::CheckCombatTarget()
 		CombatTarget = nullptr;
 		ToggleHealthBarWidget(false);
 	}
+}
+
+void AEnemy::PawnSeen(APawn* SeenPawn)
+{
+	// TODO: Implement behaviour when seeing the character
 }
 
 void AEnemy::CheckPatrolTarget()
