@@ -92,6 +92,9 @@ void AEnemy::CheckCombatTarget()
 	{
 		CombatTarget = nullptr;
 		ToggleHealthBarWidget(false);
+		EnemyState = EEnemyState::EES_Patrolling;
+		GetCharacterMovement()->MaxWalkSpeed = 125.f;
+		MoveToTarget(PatrolTarget);
 	}
 }
 
