@@ -74,9 +74,13 @@ private:
 	UPROPERTY()
 	AActor* CombatTarget;
 
-	// Distance from character that the enemy requires to start combat 
+	// Distance from character that the enemy requires to start chasing 
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
+
+	// Distance from character that the enemy requires to start attacking
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;
 
 	// Variable storing attribute component
 	UPROPERTY(VisibleAnywhere)
