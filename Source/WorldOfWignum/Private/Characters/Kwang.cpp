@@ -44,6 +44,8 @@ void AKwang::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Tags.Add(FName("Kwang"));
+
 	// Add the player's input mapping context to the Enhanced Input subsystem
 	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{

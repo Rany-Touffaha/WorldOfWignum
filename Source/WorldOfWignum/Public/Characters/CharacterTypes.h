@@ -1,5 +1,6 @@
 // World of Wignum by Rany Touffaha
 
+// ReSharper disable All
 #pragma once
 
 /**
@@ -25,7 +26,7 @@ enum class EActionState : uint8
 };
 
 /**
- * Enum class declaration for death pose states
+ * Enum class declaration for enemy death pose states
  */
 UENUM(BlueprintType)
 enum class EDeathPose : uint8
@@ -39,4 +40,13 @@ enum class EDeathPose : uint8
 	EDP_Death6 UMETA(DisplayName = "Death6")
 };
 
-
+/**
+ * Enum class declaration for enemy states
+ */
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
+{
+	EES_Patrolling UMETA(DisplayName = "Patrolling"),
+	EES_Chasing UMETA(DisplayName = "Chasing"),
+	EES_Attacking UMETA(DisplayName = "Attacking")
+};

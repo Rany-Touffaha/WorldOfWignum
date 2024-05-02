@@ -64,8 +64,17 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	CheckCombatTarget();
-	CheckPatrolTarget();
+
+	if (EnemyState > EEnemyState::EES_Patrolling)
+	{
+		CheckCombatTarget();
+	}
+	else
+	{
+		CheckPatrolTarget();
+	}
+
+
 }
 
 void AEnemy::ToggleHealthBarWidget(const bool Toggle) const
@@ -88,7 +97,15 @@ void AEnemy::CheckCombatTarget()
 
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
-	// TODO: Implement behaviour when seeing the character
+	if(EnemyState == EEnemyState::EES_Chasing) return;
+	if (SeenPawn->ActorHasTag(FName("Kwang")))
+	{
+		EnemyState = EEnemyState::EES_Chasing;
+		GetWorldTimerManager().ClearTimer(PatrolTimer);
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		CombatTarget = SeenPawn;
+		MoveToTarget(CombatTarget);
+	}
 }
 
 void AEnemy::CheckPatrolTarget()
