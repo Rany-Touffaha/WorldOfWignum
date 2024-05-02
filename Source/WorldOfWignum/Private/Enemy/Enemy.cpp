@@ -197,8 +197,6 @@ bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const
 	
 	// Calculate the distance between enenmy and target actor
 	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
-	DRAW_SPHERE_SINGLE_FRAME(GetActorLocation());
-	DRAW_SPHERE_SINGLE_FRAME(Target->GetActorLocation());
 	return DistanceToTarget <= Radius;
 }
 
@@ -340,7 +338,9 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 
 	// Set the combat target when getting attacked
 	CombatTarget = EventInstigator->GetPawn();
-	
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	MoveToTarget(CombatTarget);
 	return DamageAmount;
 }
 
