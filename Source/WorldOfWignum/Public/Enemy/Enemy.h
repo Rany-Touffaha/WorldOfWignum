@@ -39,10 +39,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	void ToggleHealthBarWidget(bool Toggle) const;
+	
 	// Function called when the enemy dies
 	void Die();
 
 	bool InTargetRange(const AActor* Target, double Radius) const;
+
+	void MoveToTarget(const AActor* Target) const;
+
+	AActor* ChoosePatrolTarget();
+
+	void CheckPatrolTarget();
+	
+	void CheckCombatTarget();
 	
 	/**
 	 *	Hit react montage functions
@@ -88,6 +98,16 @@ private:
 	// Distance from target that the enemy requires to patrol 
 	UPROPERTY(EditAnywhere)
 	double PatrolRadius = 200.f;
+
+	FTimerHandle PatrolTimer;
+
+	void PatrolTimerFinished() const;
+
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float WaitMin = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float WaitMax = 10.f;
 	
 	/**
 	 *	Animation montages

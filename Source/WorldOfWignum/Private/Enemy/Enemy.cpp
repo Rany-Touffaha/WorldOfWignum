@@ -46,71 +46,43 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	// Initially hide enemy health bar
-	if (HealthBarWidget)
-	{
-		HealthBarWidget->SetVisibility(false);
-	}
-
+	ToggleHealthBarWidget(false);
 	EnemyController = Cast<AAIController>(GetController());
-	if (EnemyController && PatrolTarget)
-	{
-		FAIMoveRequest MoveRequest;
-		MoveRequest.SetGoalActor(PatrolTarget);
-		MoveRequest.SetAcceptanceRadius(15.f);
-		FNavPathSharedPtr NavPath;
-		EnemyController->MoveTo(MoveRequest, &NavPath);
-		TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
-		for (auto Point : PathPoints)
-		{
-			const FVector& Location = Point.Location;
-			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
-		}
-	}
+	MoveToTarget(PatrolTarget);
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	CheckCombatTarget();
+	CheckPatrolTarget();
+}
 
-	if (CombatTarget)
+void AEnemy::ToggleHealthBarWidget(const bool Toggle) const
+{
+	if (HealthBarWidget)
 	{
-		// Disable health bar and remove combat target if the character is too far
-		if (!InTargetRange(CombatTarget, CombatRadius))
-		{
-			CombatTarget = nullptr;
-			if(HealthBarWidget)
-			{
-				HealthBarWidget->SetVisibility(false);
-			}
-		}
+		HealthBarWidget->SetVisibility(Toggle);
 	}
-	
-	if(PatrolTarget && EnemyController)
+}
+
+void AEnemy::CheckCombatTarget()
+{
+	// Disable health bar and remove combat target if the character is too far
+	if (!InTargetRange(CombatTarget, CombatRadius))
 	{
-		if (InTargetRange(PatrolTarget, PatrolRadius))
-		{
-			TArray<AActor*> ValidTargets;
-			for (AActor* Target : PatrolTargets)
-			{
-				if(Target != PatrolTarget)
-				{
-					ValidTargets.AddUnique(Target);
-				}
-			}
-			
-			const int32 NumPatrolTargets = ValidTargets.Num();
-			if (NumPatrolTargets > 0)
-			{
-				const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets -1);
-				AActor* Target = ValidTargets[TargetSelection];
-				PatrolTarget = Target;
-				
-				FAIMoveRequest MoveRequest;
-				MoveRequest.SetGoalActor(PatrolTarget);
-				MoveRequest.SetAcceptanceRadius(15.f);
-				EnemyController->MoveTo(MoveRequest);
-			}
-		}
+		CombatTarget = nullptr;
+		ToggleHealthBarWidget(false);
+	}
+}
+
+void AEnemy::CheckPatrolTarget()
+{
+	if (InTargetRange(PatrolTarget, PatrolRadius))
+	{
+		PatrolTarget = ChoosePatrolTarget();
+		const float WaitTime = FMath::RandRange(WaitMin, WaitMax);
+		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemy::PatrolTimerFinished, WaitTime);
 	}
 }
 
@@ -160,11 +132,8 @@ void AEnemy::Die()
 	}
 
 	// Hides enemy health bar when dead
-	if(HealthBarWidget)
-	{
-		HealthBarWidget->SetVisibility(false);
-	}
-
+	ToggleHealthBarWidget(false);
+	
 	// Disable enemy capsule when dead
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -174,11 +143,43 @@ void AEnemy::Die()
 
 bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const
 {
+	if (Target == nullptr) return false;
+	
 	// Calculate the distance between enenmy and target actor
 	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
 	DRAW_SPHERE_SINGLE_FRAME(GetActorLocation());
 	DRAW_SPHERE_SINGLE_FRAME(Target->GetActorLocation());
 	return DistanceToTarget <= Radius;
+}
+
+void AEnemy::MoveToTarget(const AActor* Target) const
+{
+	if (EnemyController == nullptr || Target == nullptr) return;
+	FAIMoveRequest MoveRequest;
+	MoveRequest.SetGoalActor(Target);
+	MoveRequest.SetAcceptanceRadius(15.f);
+	EnemyController->MoveTo(MoveRequest);
+}
+
+AActor* AEnemy::ChoosePatrolTarget()
+{
+	TArray<AActor*> ValidTargets;
+	for (AActor* Target : PatrolTargets)
+	{
+		if(Target != PatrolTarget)
+		{
+			ValidTargets.AddUnique(Target);
+		}
+	}
+			
+	const int32 NumPatrolTargets = ValidTargets.Num();
+	if (NumPatrolTargets > 0)
+	{
+		const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets -1);
+		return ValidTargets[TargetSelection];
+	}
+	
+	return nullptr;
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -194,6 +195,11 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName) const
 		AnimInstance->Montage_Play(HitReactMontage);
 		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
 	}
+}
+
+void AEnemy::PatrolTimerFinished() const
+{
+	MoveToTarget(PatrolTarget);	
 }
 
 // Function that handles which direction the enemy moves when getting hit
@@ -238,10 +244,7 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	// Enable enemy health bar when getting hit
-	if (HealthBarWidget)
-	{
-		HealthBarWidget->SetVisibility(true);
-	}
+	ToggleHealthBarWidget(true);
 
 	// Enemy gets hit by weapon, dies otherwise
 	if (Attributes && Attributes->IsAlive())
