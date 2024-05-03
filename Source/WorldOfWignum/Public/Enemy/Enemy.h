@@ -12,6 +12,7 @@
 class UHealthBarComponent;
 class UPawnSensingComponent;
 class AAIController;
+class AWeapon;
 
 /**
  * Enemy class declaration
@@ -32,6 +33,7 @@ public:
 	// Function that makes enemy take damage when getting hit
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	virtual void Destroyed() override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -77,6 +79,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeapon> WeaponClass;
 	
 	/**
 	 * Navigation

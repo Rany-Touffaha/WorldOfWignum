@@ -14,6 +14,8 @@ AItem::AItem()
 
 	// Create a default sub-object for the item's mesh component and attach it to the root
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = ItemMesh;
 
 	// Create a default sub-object for the sphere component and attach it to the root
