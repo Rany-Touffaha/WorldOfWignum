@@ -196,6 +196,7 @@ Content/**/ParagonKwang
 Content/**/InfinityBladeWeapons
 Content/**/ParagonMinions
 Content/**/AncientTreasures
+Content/**/Weapon_Pack
 
 ### UnrealEngine Patch ###
 # Don't ignore icon and splash images for mobile app
