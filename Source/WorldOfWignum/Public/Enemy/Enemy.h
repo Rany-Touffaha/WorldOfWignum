@@ -3,15 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Interfaces/HitInterface.h"
+#include "Characters/BaseCharacter.h"
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
 
 // Forward declarations for Enemy class
-class UAnimMontage;
-class UAttributeComponent;
 class UHealthBarComponent;
 class UPawnSensingComponent;
 class AAIController;
@@ -20,7 +17,7 @@ class AAIController;
  * Enemy class declaration
  */
 UCLASS()
-class WORLDOFWIGNUM_API AEnemy : public ACharacter, public IHitInterface
+class WORLDOFWIGNUM_API AEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -28,10 +25,7 @@ public:
 	AEnemy();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// Function that handles which direction the enemy moves when getting hit
-	void DirectionalHitReact(const FVector& ImpactPoint) const;
-
+	
 	// Function that handles enemy reaction when getting hit
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 
@@ -44,7 +38,7 @@ protected:
 	void ToggleHealthBarWidget(bool Toggle) const;
 	
 	// Function called when the enemy dies
-	void Die();
+	virtual void Die() override;
 
 	bool InTargetRange(const AActor* Target, double Radius) const;
 
@@ -59,11 +53,6 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 	
-	/**
-	 *	Hit react montage functions
-	 */
-	void PlayHitReactMontage(const FName& SectionName) const;
-
 	// Initialise enemy death pose to Alive
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
@@ -81,11 +70,7 @@ private:
 	// Distance from character that the enemy requires to start attacking
 	UPROPERTY(EditAnywhere)
 	double AttackRadius = 150.f;
-
-	// Variable storing attribute component
-	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* Attributes;
-
+	
 	// Variable storing health bar widget
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
@@ -123,21 +108,4 @@ private:
 
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 	
-	/**
-	 *	Animation montages
-	 */
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* DeathMontage;
-	
-	/**
-	 *	Sound and particle variables when getting hit
-	 */
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
-
-	UPROPERTY(EditAnywhere, Category = "Visual Effects")
-	UParticleSystem* HitParticles;
 };

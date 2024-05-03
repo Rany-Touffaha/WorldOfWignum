@@ -10,7 +10,6 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
-#include "Components/BoxComponent.h"
 
 /**
  * Kwang character class constructor
@@ -214,16 +213,6 @@ void AKwang::Attack()
 	{
 		PlayAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
-	}
-}
-
-// Set weapon collision depending on which momenent the character is attacking
-void AKwang::SetWeaponCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled) const
-{
-	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
-	{
-		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
-		EquippedWeapon->IgnoreActors.Empty();
 	}
 }
 

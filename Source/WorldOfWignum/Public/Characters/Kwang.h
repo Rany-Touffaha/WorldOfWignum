@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "CharacterTypes.h"
 #include "Kwang.generated.h"
@@ -15,13 +15,12 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
-class AWeapon;
 
 /**
  * Kwang character class declaration
  */
 UCLASS()
-class WORLDOFWIGNUM_API AKwang : public ACharacter
+class WORLDOFWIGNUM_API AKwang : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -31,10 +30,6 @@ public:
 
 	// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// Set weapon collision depending on which momenent the character is attacking
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -70,14 +65,14 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void EKeyPressed();
-	void Attack();
+	virtual void Attack() override;
 	void Dodge();
 
 	/**
 	 *	Play attack montage functions
 	 */
-	void PlayAttackMontage() const;
-	bool CanAttack() const;
+	virtual void PlayAttackMontage() const override;
+	virtual bool CanAttack() const override;
 
 	/**
 	 *	Play equip montage functions
@@ -87,8 +82,7 @@ protected:
 	bool CanArm() const;
 	
 	// Function to change action state to unoccupied at the end of an attack
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
+	virtual void AttackEnd() override;
 
 	// Function to attach the weapon to the back of the character
 	UFUNCTION(BlueprintCallable)
@@ -121,17 +115,7 @@ private:
 	// Variable storing current overlapping item
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
-
-	// Variable storing current equipped weapon
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AWeapon* EquippedWeapon;
-
-	/**
-	 *	Animation montages
-	 */
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* AttackMontage;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
 	

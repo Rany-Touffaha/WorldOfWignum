@@ -25,10 +25,7 @@ AEnemy::AEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
-	// Set up the attribute compnent 
-	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
-
+	
 	// Set up the view health bar widget
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
@@ -235,57 +232,9 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-// Function that plays the hit react montages
-void AEnemy::PlayHitReactMontage(const FName& SectionName) const
-{
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && HitReactMontage)
-	{
-		AnimInstance->Montage_Play(HitReactMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
-	}
-}
-
 void AEnemy::PatrolTimerFinished() const
 {
 	MoveToTarget(PatrolTarget);	
-}
-
-// Function that handles which direction the enemy moves when getting hit
-void AEnemy::DirectionalHitReact(const FVector& ImpactPoint) const
-{
-	// Calculate the forward and hit vectors 
-	const FVector Forward = GetActorForwardVector();
-	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
-	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
-
-	// Calculate the dot product of the forward and hit vectors 
-	const double CosTheta = FVector::DotProduct(Forward, ToHit);
-	double Theta = FMath::Acos(CosTheta);
-	Theta = FMath::RadiansToDegrees(Theta);
-
-	// Determine the orientation of the angle based on the cross product
-	if (const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit); CrossProduct.Z < 0)
-	{
-		Theta *= -1.f;
-	}
-
-	// Determine which quadrant based on the angle theta
-	FName Section("FromBack");
-
-	if (Theta >= -45.f && Theta < 45.f)
-	{
-		Section = FName("FromFront");
-		
-	} else if (Theta >= -135.f && Theta < -45.f)
-	{
-		Section = FName("FromLeft");
-		
-	} else if (Theta >= 45.f && Theta < 135.f)
-	{
-		Section = FName("FromRight");
-	}
-
-	PlayHitReactMontage(Section);
 }
 
 // Function that handles enemy reaction when getting hit
