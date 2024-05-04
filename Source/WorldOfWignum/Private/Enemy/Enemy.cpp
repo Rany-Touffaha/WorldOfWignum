@@ -98,35 +98,6 @@ void AEnemy::Attack()
 	PlayAttackMontage();
 }
 
-void AEnemy::PlayAttackMontage() const
-{
-	Super::PlayAttackMontage();
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if(AnimInstance && AttackMontage)
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0,1);
-		FName SectionName;
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Attack1");
-			break;
-		case 1:
-			SectionName = FName("Attack2");
-			break;
-		case 2:
-			SectionName = FName("Attack3");
-			break;
-		default:
-			SectionName = FName("Attack1");
-			break;
-		}
-		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-	}
-}
-
 bool AEnemy::CanAttack() const
 {
 	const bool bCanAttack =
@@ -144,6 +115,18 @@ void AEnemy::HandleDamage(const float DamageAmount)
 	{
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
 	}
+}
+
+int32 AEnemy::PlayDeathMontage()
+{
+	const int32 Selection = Super::PlayDeathMontage();
+	const TEnumAsByte<EDeathPose> Pose(Selection);
+	if(Pose < EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+
+	return Selection;
 }
 
 void AEnemy::PawnSeen(APawn* SeenPawn)
@@ -175,56 +158,13 @@ void AEnemy::CheckPatrolTarget()
 // Function called when the enemy dies
 void AEnemy::Die()
 {
-	// Plays death montages randomly
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && DeathMontage)
-	{
-		AnimInstance->Montage_Play(DeathMontage);
-
-		const int32 Selection = FMath::RandRange(0,5);
-		FName SectionName;
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Death1");
-			DeathPose = EDeathPose::EDP_Death1;
-			break;
-		case 1:
-			SectionName = FName("Death2");
-			DeathPose = EDeathPose::EDP_Death2;
-			break;
-		case 2:
-			SectionName = FName("Death3");
-			DeathPose = EDeathPose::EDP_Death3;
-			break;
-		case 3:
-			SectionName = FName("Death4");
-			DeathPose = EDeathPose::EDP_Death4;
-			break;
-		case 4:
-			SectionName = FName("Death5");
-			DeathPose = EDeathPose::EDP_Death5;
-			break;
-		case 5:
-			SectionName = FName("Death6");
-			DeathPose = EDeathPose::EDP_Death6;
-			break;
-		default:
-			SectionName = FName("Death1");
-			DeathPose = EDeathPose::EDP_Death1;
-			break;
-		}
-		
-		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
-	}
-
-	// Hides enemy health bar when dead
+	EnemyState = EEnemyState::EES_Dead;
+	PlayDeathMontage();
+	ClearAttackTimer();
 	HideHealthBar();
-	
-	// Disable enemy capsule when dead
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	// Remove enemy from world when dead
-	SetLifeSpan(3.f);
+	DisableCapsule();
+	SetLifeSpan(DeathLifeSpan);
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const

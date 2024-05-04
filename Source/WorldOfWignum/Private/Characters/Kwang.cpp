@@ -119,34 +119,6 @@ void AKwang::EKeyPressed()
 	}
 }
 
-// Function that plays the attack montages
-void AKwang::PlayAttackMontage() const
-{
-
-	Super::PlayAttackMontage();
-	
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if(AnimInstance && AttackMontage)
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0,1);
-		FName SectionName;
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Attack1");
-			break;
-		case 1:
-			SectionName = FName("Attack2");
-			break;
-		default:
-			SectionName = FName("Attack1");
-			break;
-		}
-		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-	}
-}
-
 // Function that plays the equip montages
 void AKwang::PlayEquipMontage(const FName& SectionName) const
 {

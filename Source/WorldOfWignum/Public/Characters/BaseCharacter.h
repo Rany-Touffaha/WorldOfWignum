@@ -36,7 +36,6 @@ protected:
 	/**
 	 *	Play attack montage functions
 	 */
-	virtual void PlayAttackMontage() const;
 	virtual bool CanAttack() const;
 
 	/**
@@ -58,22 +57,35 @@ protected:
 	/**
 	 *	Animation montages
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* HitReactMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* DeathMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FName> AttackMontageSections;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FName> DeathMontageSections;
+	
 	// Variable storing attribute component
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
+	
 
 	void PlayHitSound(const FVector& ImpactPoint) const;
 	void SpawnHitParticles(const FVector& ImpactPoint) const;
 	virtual void HandleDamage(float DamageAmount);
+	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
+	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames) const;
+	virtual int32 PlayAttackMontage() const;
+	virtual int32 PlayDeathMontage();
+	void DisableCapsule() const;
+
 
 private:
 	/**

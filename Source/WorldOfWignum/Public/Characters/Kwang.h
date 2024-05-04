@@ -71,7 +71,6 @@ protected:
 	/**
 	 *	Play attack montage functions
 	 */
-	virtual void PlayAttackMontage() const override;
 	virtual bool CanAttack() const override;
 
 	/**
