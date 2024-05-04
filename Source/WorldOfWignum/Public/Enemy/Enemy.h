@@ -52,6 +52,9 @@ protected:
 	
 	void CheckCombatTarget();
 
+	virtual void Attack() override;
+	virtual void PlayAttackMontage() const override;
+
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 	

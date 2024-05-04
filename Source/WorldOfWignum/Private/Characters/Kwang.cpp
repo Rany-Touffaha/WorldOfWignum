@@ -122,6 +122,9 @@ void AKwang::EKeyPressed()
 // Function that plays the attack montages
 void AKwang::PlayAttackMontage() const
 {
+
+	Super::PlayAttackMontage();
+	
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if(AnimInstance && AttackMontage)
 	{
@@ -209,6 +212,9 @@ void AKwang::FinishEquipping()
 // Function to handle attack action
 void AKwang::Attack()
 {
+
+	Super::Attack();
+	
 	if (CanAttack())
 	{
 		PlayAttackMontage();
