@@ -16,7 +16,7 @@
  */
 AKwang::AKwang()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Remove inheritance of Character's class rotation from the Controller
 	bUseControllerRotationPitch = false;
@@ -37,6 +37,23 @@ AKwang::AKwang()
 	// Set up the camera component for the character's view
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(SpringArm);
+}
+
+// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
+void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		// Bind the character's movement and look functions to input actions using Enhanced Input
+		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AKwang::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AKwang::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AKwang::EKeyPressed);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AKwang::Attack);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AKwang::Dodge);
+	}
 }
 
 void AKwang::BeginPlay()
@@ -89,50 +106,45 @@ void AKwang::EKeyPressed()
 {
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
-		// Attaching Weapon to Right Hand Socket
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-		
-		// Change Character state to equipped one-handed
-		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-
-		// Make overlapping weapon the equipped weapon
-		OverlappingItem = nullptr;
-		EquippedWeapon = OverlappingWeapon;
+		EquipWeapon(OverlappingWeapon);
 	}
 	else
 	{
-		// Check if character can disarm before playing unequip animation
 		if(CanDisarm())
 		{
-			PlayEquipMontage(FName("Unequip"));
-			CharacterState = ECharacterState::ECS_Unequipped;
-			ActionState = EActionState::EAS_EquippingWeapon;
+			Disarm();
 		}
-		
-		// Check if character can arm before playing equip animation
 		else if (CanArm())
 		{
-			PlayEquipMontage(FName("Equip"));
-			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-			ActionState = EActionState::EAS_EquippingWeapon;
+			Arm();
 		}
 	}
 }
 
-// Function that plays the equip montages
-void AKwang::PlayEquipMontage(const FName& SectionName) const
+// Function to handle attack action
+void AKwang::Attack()
 {
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && EquipMontage)
+	Super::Attack();
+	
+	if (CanAttack())
 	{
-		AnimInstance->Montage_Play(EquipMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
 	}
 }
 
-// Function to change action state to unoccupied at the end of an attack
-void AKwang::AttackEnd()
+// Function to handle dodge action
+void AKwang::Dodge()
 {
-	ActionState = EActionState::EAS_Unoccupied;
+	// TODO: Implement dodging mechanic
+}
+
+void AKwang::EquipWeapon(AWeapon* Weapon)
+{
+	Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	OverlappingItem = nullptr;
+	EquippedWeapon = Weapon;
 }
 
 // Function that checks if the character can attack
@@ -140,6 +152,12 @@ bool AKwang::CanAttack() const
 {
 	return CharacterState != ECharacterState::ECS_Unequipped &&
 		ActionState == EActionState::EAS_Unoccupied;
+}
+
+// Function to change action state to unoccupied at the end of an attack
+void AKwang::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 // Function that checks if character can disarm 
@@ -157,8 +175,32 @@ bool AKwang::CanArm() const
 		EquippedWeapon;
 }
 
-// Function to attach the weapon to the back of the character
 void AKwang::Disarm()
+{
+	PlayEquipMontage(FName("Unequip"));
+	CharacterState = ECharacterState::ECS_Unequipped;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void AKwang::Arm()
+{
+	PlayEquipMontage(FName("Equip"));
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+// Function that plays the equip montages
+void AKwang::PlayEquipMontage(const FName& SectionName) const
+{
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+	}
+}
+
+// Function to attach the weapon to the back of the character
+void AKwang::AttachWeaponToBack()
 {
 	if (EquippedWeapon)
 	{
@@ -167,7 +209,7 @@ void AKwang::Disarm()
 }
 
 // Function to attach the weapon to the right hand of the character
-void AKwang::Arm()
+void AKwang::AttachWeaponToHand()
 {
 	if (EquippedWeapon)
 	{
@@ -180,45 +222,3 @@ void AKwang::FinishEquipping()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
-
-// Function to handle attack action
-void AKwang::Attack()
-{
-
-	Super::Attack();
-	
-	if (CanAttack())
-	{
-		PlayAttackMontage();
-		ActionState = EActionState::EAS_Attacking;
-	}
-}
-
-// Function to handle dodge action
-void AKwang::Dodge()
-{
-	// TODO: Implement dodging mechanic
-}
-
-void AKwang::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
-void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		// Bind the character's movement and look functions to input actions using Enhanced Input
-		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AKwang::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AKwang::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AKwang::EKeyPressed);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AKwang::Attack);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AKwang::Dodge);
-	}
-}
-

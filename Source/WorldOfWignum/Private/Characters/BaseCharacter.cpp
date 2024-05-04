@@ -11,8 +11,9 @@ ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set up the attribute compnent 
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
 }
 
 void ABaseCharacter::BeginPlay()
@@ -140,7 +141,6 @@ int32 ABaseCharacter::PlayRandomMontageSection(UAnimMontage* Montage, const TArr
 	PlayMontageSection(Montage, SectionNames[Selection]);
 	return Selection;
 }
-
 
 int32 ABaseCharacter::PlayAttackMontage() const
 {

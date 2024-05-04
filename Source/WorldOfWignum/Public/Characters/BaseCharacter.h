@@ -20,43 +20,51 @@ public:
 	ABaseCharacter();
 	virtual void Tick(float DeltaTime) override;
 
-	// Set weapon collision depending on which momenent the character is attacking
+protected:
+	virtual void BeginPlay() override;
+	
+	virtual void Attack();
+	virtual void Die();
+	void DirectionalHitReact(const FVector& ImpactPoint) const;
+	virtual void HandleDamage(float DamageAmount);
+	void PlayHitSound(const FVector& ImpactPoint) const;
+	void SpawnHitParticles(const FVector& ImpactPoint) const;
+	void DisableCapsule() const;
+	virtual bool CanAttack() const;
+	bool IsAlive() const;
+	
+	void PlayHitReactMontage(const FName& SectionName) const;
+	virtual int32 PlayAttackMontage() const;
+	virtual int32 PlayDeathMontage();
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void AttackEnd();
+	
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled) const;
 	
-protected:
-	virtual void BeginPlay() override;
-	virtual void Attack();
-
-	bool IsAlive() const;
-	
-	// Function called when the enemy dies
-	virtual void Die();
-
-	/**
-	 *	Play attack montage functions
-	 */
-	virtual bool CanAttack() const;
-
-	/**
-	*	Hit react montage functions
-	*/
-	void PlayHitReactMontage(const FName& SectionName) const;
-
-	// Function that handles which direction the enemy moves when getting hit
-	void DirectionalHitReact(const FVector& ImpactPoint) const;
-
-	// Function to change action state to unoccupied at the end of an attack
-	UFUNCTION(BlueprintCallable)
-	virtual void AttackEnd();
-
-	// Variable storing current equipped weapon
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
+	
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
+
+private:
+	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
+	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames) const;
+	
+	/**
+	 *	Sound and particle variables when getting hit
+	 */
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = "Visual Effects")
+	UParticleSystem* HitParticles;
 
 	/**
-	 *	Animation montages
-	 */
+	*	Animation montages
+	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* AttackMontage;
 
@@ -71,29 +79,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FName> DeathMontageSections;
-	
-	// Variable storing attribute component
-	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* Attributes;
-	
-
-	void PlayHitSound(const FVector& ImpactPoint) const;
-	void SpawnHitParticles(const FVector& ImpactPoint) const;
-	virtual void HandleDamage(float DamageAmount);
-	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
-	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames) const;
-	virtual int32 PlayAttackMontage() const;
-	virtual int32 PlayDeathMontage();
-	void DisableCapsule() const;
-
-
-private:
-	/**
-	 *	Sound and particle variables when getting hit
-	 */
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
-
-	UPROPERTY(EditAnywhere, Category = "Visual Effects")
-	UParticleSystem* HitParticles;
 };
