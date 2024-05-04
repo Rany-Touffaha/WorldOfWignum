@@ -27,6 +27,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Attack();
+
+	bool IsAlive() const;
+	
 	// Function called when the enemy dies
 	virtual void Die();
 
@@ -68,6 +71,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
+	void PlayHitSound(const FVector& ImpactPoint) const;
+	void SpawnHitParticles(const FVector& ImpactPoint) const;
+	virtual void HandleDamage(float DamageAmount);
+
+private:
 	/**
 	 *	Sound and particle variables when getting hit
 	 */

@@ -4,6 +4,7 @@
 #include "Components/AttributeComponent.h"
 #include "Components/BoxComponent.h"
 #include "Items/Weapons/Weapon.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -20,6 +21,11 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::Attack()
 {
+}
+
+bool ABaseCharacter::IsAlive() const
+{
+	return Attributes && Attributes->IsAlive();
 }
 
 void ABaseCharacter::Die()
@@ -86,6 +92,38 @@ void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint) const
 
 void ABaseCharacter::AttackEnd()
 {
+}
+
+void ABaseCharacter::PlayHitSound(const FVector& ImpactPoint) const
+{
+	// Plays sound if gets hit
+	if(HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
+}
+
+void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint) const
+{
+	// Spawn blood particles effect when getting hit
+	if(HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+		);
+	}
+}
+
+void ABaseCharacter::HandleDamage(const float DamageAmount)
+{
+	if (Attributes)
+		Attributes->ReceiveDamage(DamageAmount);
 }
 
 void ABaseCharacter::Tick(float DeltaTime)
