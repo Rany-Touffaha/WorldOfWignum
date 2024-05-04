@@ -54,6 +54,7 @@ protected:
 	virtual bool CanAttack() const override;
 	virtual void HandleDamage(float DamageAmount) override;
 	virtual int32 PlayDeathMontage() override;
+	virtual void AttackEnd() override;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float DeathLifeSpan = 8.f;
@@ -76,7 +77,7 @@ private:
 
 	// Distance from character that the enemy requires to start chasing 
 	UPROPERTY(EditAnywhere)
-	double CombatRadius = 500.f;
+	double CombatRadius = 1000.f;
 
 	// Distance from character that the enemy requires to start attacking
 	UPROPERTY(EditAnywhere)
