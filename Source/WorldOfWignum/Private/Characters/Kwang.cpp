@@ -7,9 +7,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/CapsuleComponent.h"
 
 /**
  * Kwang character class constructor
@@ -28,6 +30,18 @@ AKwang::AKwang()
 
 	// Change the speed of the Rotation Rate
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
+
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_WorldDynamic);
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+
+	GetMesh()->SetCollisionObjectType(ECC_WorldDynamic);
+	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 	// Set up the spring arm component for camera control
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -56,11 +70,17 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void AKwang::GetHit_Implementation(const FVector& ImpactPoint)
+{
+	PlayHitSound(ImpactPoint);
+	SpawnHitParticles(ImpactPoint);
+}
+
 void AKwang::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Tags.Add(FName("Kwang"));
+	Tags.Add(FName("EngageableTarget"));
 
 	// Add the player's input mapping context to the Enhanced Input subsystem
 	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController()))

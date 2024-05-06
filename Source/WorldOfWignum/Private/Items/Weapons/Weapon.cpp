@@ -37,11 +37,6 @@ void AWeapon::BeginPlay()
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxOverlap);
 }
 
-void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-}
-
 // Function to attach an item mesh to a socket
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const
 {
@@ -49,9 +44,36 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) 
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 }
 
+void AWeapon::PlayEquipSound() const
+{
+	if (EquipSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
+	}
+}
+
+void AWeapon::DisableSphereCollision() const
+{
+	if (Sphere)
+	{
+		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void AWeapon::DeactivateEmbers() const
+{
+	if (EmbersEffect)
+	{
+		EmbersEffect->Deactivate();
+	}
+}
+
 // Function to equip the weapon to a parent scene component at a specific socket
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	// Set the Item State to equipped
+	ItemState = EItemState::EIS_Equipped;
+	
 	// Set owner and instigator
 	SetOwner(NewOwner);
 	SetInstigator(NewInstigator);
@@ -59,37 +81,50 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOw
 	// Attach mesh to a socket
 	AttachMeshToSocket(InParent, InSocketName);
 
-	// Set the Item State to equipped
-	ItemState = EItemState::EIS_Equipped;
-
-	// Play sound when equipping
-	if (EquipSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
-	}
-
 	// Disable the collision of the character sphere with the weapon when equipping to the back
-	if (Sphere)
-	{
-		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-
+	DisableSphereCollision();
+	
+	// Play sound when equipping
+	PlayEquipSound();
+	
 	// Disable Niagara effect once the weapon is picked up
-	if (EmbersEffect)
+	DeactivateEmbers();
+}
+
+void AWeapon::ExecuteGetHit(const FHitResult& BoxHit)
+{
+	// Execute get hit if the actor is valid
+	if(const IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
 	{
-		EmbersEffect->Deactivate();
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
 	}
 }
 
-// Override function to handle events when leaving sphere overlap
-void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+bool AWeapon::ActorIsSameType(const AActor* OtherActor) const
 {
-	Super::OnSphereEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
 }
 
 // Create a box trace if the weapon overlaps with another component
 void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ActorIsSameType(OtherActor)) return;;
+	
+	FHitResult BoxHit;
+	BoxTrace(BoxHit);
+
+	// Get the impact point of what the weapon hits only if it is a Hit interface 
+	if (BoxHit.GetActor())
+	{
+		if(ActorIsSameType(BoxHit.GetActor())) return;
+		UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage,GetInstigator()->GetController(),this, UDamageType::StaticClass());
+		ExecuteGetHit(BoxHit);
+		CreateFields(BoxHit.ImpactPoint);
+	}
+}
+
+void AWeapon::BoxTrace(FHitResult& BoxHit)
 {
 	// Create start and end point of the box trace
 	const FVector Start = BoxTraceStart->GetComponentLocation();
@@ -106,43 +141,20 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 
 	// Create a box trace at the hit point of the weapon
-	FHitResult BoxHit;
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
 		Start,
 		End,
-		FVector(5.f, 5.f, 5.f),
+		BoxTraceExtent,
 		BoxTraceStart->GetComponentRotation(),
 		TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		bShowBoxDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
 		BoxHit,
 		true
 	);
 
-	// Get the impact point of what the weapon hits only if it is a Hit interface 
-	if (BoxHit.GetActor())
-	{
-		UGameplayStatics::ApplyDamage(
-			BoxHit.GetActor(),
-			Damage,
-			GetInstigator()->GetController(),
-			this,
-			UDamageType::StaticClass()
-		);
-
-		// Execute get hit if the actor is valid
-		if(IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
-		{
-			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
-		}
-
-		// Add what has been hit to the list of actors are ignored
-		IgnoreActors.AddUnique(BoxHit.GetActor());
-
-		// Call the force field at the impact point
-		CreateFields(BoxHit.ImpactPoint);
-		
-	}
+	// Add what has been hit to the list of actors are ignored
+	IgnoreActors.AddUnique(BoxHit.GetActor());
 }
