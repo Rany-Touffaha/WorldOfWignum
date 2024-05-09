@@ -72,8 +72,7 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AKwang::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	PlayHitSound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
+	Super::GetHit_Implementation(ImpactPoint);
 }
 
 void AKwang::BeginPlay()

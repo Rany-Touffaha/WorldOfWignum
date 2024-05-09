@@ -63,10 +63,8 @@ void AEnemy::Destroyed()
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
+	Super::GetHit_Implementation(ImpactPoint);
 	ShowHealthBar();
-	IsAlive() ? DirectionalHitReact(ImpactPoint) : Die();
-	PlayHitSound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
 }
 
 void AEnemy::BeginPlay()
