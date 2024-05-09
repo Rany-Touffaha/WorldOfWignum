@@ -73,6 +73,8 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AKwang::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	Super::GetHit_Implementation(ImpactPoint);
+
+	ActionState = EActionState::EAS_HitReaction;
 }
 
 void AKwang::BeginPlay()
@@ -238,6 +240,11 @@ void AKwang::AttachWeaponToHand()
 
 // Function to reset the state to unoccupied when done equipping
 void AKwang::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AKwang::HitReactEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
