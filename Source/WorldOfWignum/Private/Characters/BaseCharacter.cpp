@@ -165,6 +165,24 @@ void ABaseCharacter::StopAttackMontage() const
 		AnimInstance->Montage_Stop(0.25f, AttackMontage);
 }
 
+FVector ABaseCharacter::GetTranslationWarpTarget() const
+{
+	if (CombatTarget == nullptr) return FVector();
+
+	const FVector CombatTargetLocation = CombatTarget->GetActorLocation();
+	const FVector Location = GetActorLocation();
+
+	FVector TargetToMe = (Location - CombatTargetLocation).GetSafeNormal();
+	TargetToMe *= WarpTargetDistance;
+
+	return CombatTargetLocation + TargetToMe;
+}
+
+FVector ABaseCharacter::GetRotationWarpTarget() const
+{
+	return CombatTarget ? CombatTarget->GetActorLocation() : FVector();
+}
+
 void ABaseCharacter::DisableCapsule() const
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
