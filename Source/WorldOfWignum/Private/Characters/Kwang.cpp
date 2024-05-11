@@ -70,6 +70,13 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+float AKwang::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	HandleDamage(DamageAmount);
+	return DamageAmount;
+}
+
 void AKwang::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
