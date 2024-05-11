@@ -91,12 +91,12 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOw
 	DeactivateEmbers();
 }
 
-void AWeapon::ExecuteGetHit(const FHitResult& BoxHit)
+void AWeapon::ExecuteGetHit(const FHitResult& BoxHit) const
 {
 	// Execute get hit if the actor is valid
 	if(const IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
 	{
-		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
 	}
 }
 

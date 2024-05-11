@@ -37,7 +37,7 @@ void ABreakableActor::Tick(float DeltaTime)
 }
 
 // Function that handles breakable item reaction when getting hit
-void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
+void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	if (bBroken) return;
 	bBroken = true;

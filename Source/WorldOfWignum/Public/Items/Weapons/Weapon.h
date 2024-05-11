@@ -29,10 +29,11 @@ public:
 
 	// Function to equip the weapon to a parent scene component at a specific socket
 	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
-	static void ExecuteGetHit(const FHitResult& BoxHit);
+	void ExecuteGetHit(const FHitResult& BoxHit) const;
 	bool ActorIsSameType(const AActor* OtherActor) const;
 
 	// List of actors to ignore in the box trace
+	UPROPERTY()
 	TArray<AActor*> IgnoreActors;
 	
 protected:
