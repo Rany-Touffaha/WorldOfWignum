@@ -159,6 +159,12 @@ int32 ABaseCharacter::PlayDeathMontage()
 	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
 }
 
+void ABaseCharacter::StopAttackMontage() const
+{
+	if(UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		AnimInstance->Montage_Stop(0.25f, AttackMontage);
+}
+
 void ABaseCharacter::DisableCapsule() const
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
