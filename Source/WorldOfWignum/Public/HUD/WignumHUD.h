@@ -24,4 +24,7 @@ private:
 
 	UPROPERTY()
 	UWignumOverlay* WignumOverlay;
+
+public:
+	FORCEINLINE UWignumOverlay* GetWignumOverlay() const { return WignumOverlay; }
 };

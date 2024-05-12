@@ -8,6 +8,7 @@
 #include "CharacterTypes.h"
 #include "Kwang.generated.h"
 
+
 // Forward declarations for Kwang class
 class UInputMappingContext;
 class UInputAction;
@@ -15,6 +16,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class UWignumOverlay;
 
 /**
  * Kwang character class declaration
@@ -88,6 +90,9 @@ protected:
 	UInputAction* DodgeAction;
 
 private:
+	void InitialiseWignumOverlay(const APlayerController* PlayerController);
+	void InitialiseInputMappingContext(const APlayerController* PlayerController) const;
+	
 	/** Character Components */
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -105,6 +110,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	UPROPERTY()
+	UWignumOverlay* WignumOverlay;
 	
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }

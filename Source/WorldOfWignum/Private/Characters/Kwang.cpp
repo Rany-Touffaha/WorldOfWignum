@@ -11,7 +11,10 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/AttributeComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "HUD/WignumHUD.h"
+#include "HUD/WignumOverlay.h"
 
 /**
  * Kwang character class constructor
@@ -85,20 +88,41 @@ void AKwang::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 	ActionState = EActionState::EAS_HitReaction;
 }
 
+void AKwang::InitialiseWignumOverlay(const APlayerController* PlayerController)
+{
+	if (const AWignumHUD* WignumHUD = Cast<AWignumHUD>(PlayerController->GetHUD()))
+	{
+		WignumOverlay = WignumHUD->GetWignumOverlay();
+
+		if (WignumOverlay && Attributes)
+		{
+			WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
+			WignumOverlay->SetStaminaBarPercent(1.f);
+			WignumOverlay->SetGold(0);
+			WignumOverlay->SetSouls(0);
+		}
+	}
+}
+
+void AKwang::InitialiseInputMappingContext(const APlayerController* PlayerController) const
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(KwangContext,0);
+	}
+}
+
 void AKwang::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Tags.Add(FName("EngageableTarget"));
 
-	// Add the player's input mapping context to the Enhanced Input subsystem
 	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(KwangContext,0);
-		}
-	}	
+		InitialiseWignumOverlay(PlayerController);
+		InitialiseInputMappingContext(PlayerController);
+	}
 }
 
 // Function to handle movement input
