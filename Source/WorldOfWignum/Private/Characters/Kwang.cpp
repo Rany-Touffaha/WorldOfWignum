@@ -66,17 +66,36 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// Bind the character's movement and look functions to input actions using Enhanced Input
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AKwang::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AKwang::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AKwang::Jump);
 		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AKwang::EKeyPressed);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AKwang::Attack);
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AKwang::Dodge);
 	}
 }
 
-float AKwang::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+bool AKwang::IsUnoccupied() const
+{
+	return ActionState == EActionState::EAS_Unoccupied;
+}
+
+void AKwang::Jump()
+{
+	if (IsUnoccupied())
+		Super::Jump();
+}
+
+void AKwang::SetHUDHealth() const
+{
+	if (WignumOverlay && Attributes)
+	{
+		WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
+	}
+}
+
+float AKwang::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
+	SetHUDHealth();
 	return DamageAmount;
 }
 
