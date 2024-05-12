@@ -2,7 +2,6 @@
 
 #include "Items/Treasure.h"
 #include "Characters/Kwang.h"
-#include "Kismet/GameplayStatics.h"
 
 // Function that picks up the overlapping treasure
 void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -12,14 +11,7 @@ void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if(AKwang* KwangCharacter = Cast<AKwang>(OtherActor))
 	{
 		// Play pickup sound
-		if(PickupSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				PickupSound,
-				GetActorLocation()
-			);
-		}
+		SpawnPickupSound();
 
 		// Destroy the treasure when picked up
 		Destroy();

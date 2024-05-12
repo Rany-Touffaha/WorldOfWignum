@@ -3,7 +3,9 @@
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Interfaces/PickupInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 /**
  * Item class constructor
@@ -69,6 +71,30 @@ void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		// Clear overlapping item for the pickup interface
 		PickupInterface->SetOverlappingItem(nullptr);
+	}
+}
+
+void AItem::SpawnPickupSystem()
+{
+	if (PickupEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			PickupEffect,
+			GetActorLocation()
+			);
+	} 
+}
+
+void AItem::SpawnPickupSound()
+{
+	if (PickupSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(
+			this,
+			PickupSound,
+			GetActorLocation()
+		);
 	}
 }
 

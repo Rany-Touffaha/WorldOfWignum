@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+class UNiagaraSystem;
 //Forward declarations for Item class
 class USphereComponent;
 class UNiagaraComponent;
@@ -54,6 +55,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UNiagaraComponent* ItemEffect;
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* PickupSound;
+
 	// State of the item
 	EItemState ItemState = EItemState::EIS_Hovering;
 
@@ -72,10 +76,16 @@ protected:
 	// Function to handle events when leaving sphere overlap
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	virtual void SpawnPickupSystem();
+	virtual void SpawnPickupSound();
 	
 private:
 	// Property to track running time
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime = 0;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupEffect;
 };
 

@@ -6,6 +6,7 @@
 #include "Items/Item.h"
 #include "Soul.generated.h"
 
+class UNiagaraSystem;
 /**
  * 
  */

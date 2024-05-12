@@ -1,6 +1,5 @@
 // World of Wignum by Rany Touffaha
 
-
 #include "Items/Soul.h"
 #include "Interfaces/PickupInterface.h"
 
@@ -12,6 +11,8 @@ void ASoul::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		// Set overlapping item for the pickup interface
 		PickupInterface->AddSouls(this);
 	}
-
+	SpawnPickupSystem();
+	SpawnPickupSound();
+	
 	Destroy();
 }
