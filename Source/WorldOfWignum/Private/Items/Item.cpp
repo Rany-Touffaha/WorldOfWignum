@@ -23,8 +23,8 @@ AItem::AItem()
 	Sphere->SetupAttachment(GetRootComponent());
 
 	// Create a default sub-object for the Niagara component and attach it to the root
-	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
-	EmbersEffect->SetupAttachment(GetRootComponent());
+	ItemEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
+	ItemEffect->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()

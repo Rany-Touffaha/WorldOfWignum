@@ -52,7 +52,7 @@ protected:
 
 	// Niagara effect component for the item
 	UPROPERTY(EditAnywhere)
-	UNiagaraComponent* EmbersEffect;
+	UNiagaraComponent* ItemEffect;
 
 	// State of the item
 	EItemState ItemState = EItemState::EIS_Hovering;
