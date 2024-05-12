@@ -34,5 +34,9 @@ void UKwangAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 		// Get the character's current state
 		CharacterState = Kwang->GetCharacterState();
+
+		ActionState = Kwang->GetActionState();
+
+		DeathPose = Kwang->GetDeathPose();
 	}
 }

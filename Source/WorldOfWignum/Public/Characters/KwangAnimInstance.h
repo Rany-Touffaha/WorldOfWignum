@@ -41,4 +41,13 @@ public:
 	// Character state enum indicating the current state of the character
 	UPROPERTY(BlueprintReadOnly, Category = "Movement|Character State")
 	ECharacterState CharacterState;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement|Action State")
+	EActionState ActionState;
+
+	/**
+	 * 
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Movement|Death State")
+	TEnumAsByte<EDeathPose> DeathPose;
 };

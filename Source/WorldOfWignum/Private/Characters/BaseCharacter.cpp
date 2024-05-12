@@ -1,6 +1,8 @@
 // World of Wignum by Rany Touffaha
 
 #include "Characters/BaseCharacter.h"
+
+#include "Characters/CharacterTypes.h"
 #include "Components/AttributeComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -37,8 +39,14 @@ bool ABaseCharacter::IsAlive() const
 	return Attributes && Attributes->IsAlive();
 }
 
+void ABaseCharacter::DisableMeshCollision() const
+{
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void ABaseCharacter::Die()
 {
+	PlayDeathMontage();
 }
 
 bool ABaseCharacter::CanAttack() const
@@ -156,7 +164,14 @@ int32 ABaseCharacter::PlayAttackMontage() const
 
 int32 ABaseCharacter::PlayDeathMontage()
 {
-	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	const int32 Selection = PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	const TEnumAsByte<EDeathPose> Pose(Selection);
+	if(Pose < EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+	
+	return Selection;
 }
 
 void ABaseCharacter::StopAttackMontage() const
