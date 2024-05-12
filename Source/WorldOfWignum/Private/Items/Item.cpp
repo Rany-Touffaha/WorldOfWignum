@@ -2,8 +2,8 @@
 
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
-#include "Characters/Kwang.h"
 #include "NiagaraComponent.h"
+#include "Interfaces/PickupInterface.h"
 
 /**
  * Item class constructor
@@ -52,11 +52,11 @@ float AItem::TransformedCos() const
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Check if the overlapping actor is a character
-	if(AKwang* KwangCharacter = Cast<AKwang>(OtherActor))
+	// Check if the overlapping actor is a pickup interface
+	if(IPickupInterface* PickupInterface = Cast<IPickupInterface>(OtherActor))
 	{
-		// Set overlapping item for the character
-		KwangCharacter->SetOverlappingItem(this);
+		// Set overlapping item for the pickup interface
+		PickupInterface->SetOverlappingItem(this);
 	}
 }
 
@@ -64,11 +64,11 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	// Check if the overlapping actor is a character
-	if(AKwang* KwangCharacter = Cast<AKwang>(OtherActor))
+	// Check if the overlapping actor is a pickup interface
+	if(IPickupInterface* PickupInterface = Cast<IPickupInterface>(OtherActor))
 	{
-		// Clear overlapping item for the character
-		KwangCharacter->SetOverlappingItem(nullptr);
+		// Clear overlapping item for the pickup interface
+		PickupInterface->SetOverlappingItem(nullptr);
 	}
 }
 

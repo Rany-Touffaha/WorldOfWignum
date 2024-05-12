@@ -111,6 +111,16 @@ void AKwang::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 	}
 }
 
+void AKwang::SetOverlappingItem(AItem* Item)
+{
+	OverlappingItem = Item;
+}
+
+void AKwang::AddSouls(ASoul* Soul)
+{
+	
+}
+
 void AKwang::InitialiseWignumOverlay(const APlayerController* PlayerController)
 {
 	if (const AWignumHUD* WignumHUD = Cast<AWignumHUD>(PlayerController->GetHUD()))
