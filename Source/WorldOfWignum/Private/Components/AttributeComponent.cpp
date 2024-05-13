@@ -7,7 +7,7 @@
  */
 UAttributeComponent::UAttributeComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UAttributeComponent::BeginPlay()
@@ -20,16 +20,31 @@ void UAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UAttributeComponent::RegenStamina(float DeltaTime)
+{
+	Stamina = FMath::Clamp(Stamina+StaminaRegenRate*DeltaTime, 0.f, MaxStamina);
+}
+
 // Reduces health from bound object
 void UAttributeComponent::ReceiveDamage(const float Damage)
 {
 	Health = FMath::Clamp(Health-Damage, 0.f, MaxHealth);
 }
 
+void UAttributeComponent::UseStamina(const float StaminaCost)
+{
+	Stamina = FMath::Clamp(Stamina-StaminaCost, 0.f, MaxStamina);
+}
+
 // Getter for health percentage
 float UAttributeComponent::GetHealthPercent() const
 {
 	return Health/MaxHealth;
+}
+
+float UAttributeComponent::GetStaminaPercent() const
+{
+	return Stamina/MaxStamina;
 }
 
 // Check if character's health is above 0

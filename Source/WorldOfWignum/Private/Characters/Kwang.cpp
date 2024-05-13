@@ -23,7 +23,7 @@
  */
 AKwang::AKwang()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// Remove inheritance of Character's class rotation from the Controller
 	bUseControllerRotationPitch = false;
@@ -56,6 +56,17 @@ AKwang::AKwang()
 	// Set up the camera component for the character's view
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(SpringArm);
+}
+
+void AKwang::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (Attributes && WignumOverlay)
+	{
+		Attributes->RegenStamina(DeltaSeconds);
+		WignumOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 }
 
 // Override SetupPlayerInputComponent function to bind input actions to corresponding functions
@@ -234,12 +245,27 @@ void AKwang::Attack()
 	}
 }
 
+bool AKwang::IsOccupied() const
+{
+	return ActionState != EActionState::EAS_Unoccupied;
+}
+
+bool AKwang::HasEnoughStamina() const
+{
+	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
 // Function to handle dodge action
 void AKwang::Dodge()
 {
-	if (ActionState != EActionState::EAS_Unoccupied) return;
+	if (IsOccupied() || !HasEnoughStamina()) return;
 	PlayDodgeMontage();
 	ActionState = EActionState::EAS_Dodge;
+	if (Attributes && WignumOverlay)
+	{
+		Attributes->UseStamina(Attributes->GetDodgeCost());
+		WignumOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 }
 
 void AKwang::EquipWeapon(AWeapon* Weapon)

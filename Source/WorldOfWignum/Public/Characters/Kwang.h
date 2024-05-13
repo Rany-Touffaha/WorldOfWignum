@@ -29,6 +29,7 @@ class WORLDOFWIGNUM_API AKwang : public ABaseCharacter, public IPickupInterface
 
 public:
 	AKwang();
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -58,7 +59,8 @@ protected:
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName) const;
 	virtual void Die() override;
-
+	bool IsOccupied() const;
+	bool HasEnoughStamina() const;
 		
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();

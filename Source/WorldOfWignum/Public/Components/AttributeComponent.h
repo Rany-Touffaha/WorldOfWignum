@@ -17,6 +17,7 @@ class WORLDOFWIGNUM_API UAttributeComponent : public UActorComponent
 public:	
 	UAttributeComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void RegenStamina(float DeltaTime);
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,24 +25,43 @@ protected:
 private:
 	// Current Health
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	float Health = 100;
+	float Health = 100.f;
 
 	// Maximum Health
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	float MaxHealth = 100;
+	float MaxHealth = 100.f;
+
+	// Current Stamina
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	float Stamina = 100.f;
+
+	// Maximum Stamina
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	float MaxStamina = 100.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	int32 Gold = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	int32 Gold;
+	int32 Souls = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	int32 Souls;
-
+	float DodgeCost = 14.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	float StaminaRegenRate = 8.f;
+	
 public:
 	// Reduces health from bound object
 	void ReceiveDamage(float Damage);
 
+	void UseStamina(float StaminaCost);
+
 	// Getter for health percentage
 	float GetHealthPercent() const;
+
+	// Getter for health percentage
+	float GetStaminaPercent() const;
 
 	// Check if character's health is above 0
 	bool IsAlive() const;
@@ -51,4 +71,6 @@ public:
 
 	FORCEINLINE int32 GetGold() const { return Gold; }
 	FORCEINLINE int32 GetSouls() const { return Souls; }
+	FORCEINLINE int32 GetDodgeCost() const { return DodgeCost; }
+	FORCEINLINE int32 GetStamina() const { return Stamina; }
 };
