@@ -37,3 +37,13 @@ bool UAttributeComponent::IsAlive() const
 {
 	return Health > 0.f;
 }
+
+void UAttributeComponent::AddGold(int32 AmountOfGold)
+{
+	Gold += AmountOfGold;
+}
+
+void UAttributeComponent::AddSouls(int32 NumberOfSouls)
+{
+	Souls += NumberOfSouls;
+}

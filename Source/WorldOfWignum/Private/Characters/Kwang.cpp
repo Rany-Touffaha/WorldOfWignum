@@ -15,6 +15,8 @@
 #include "Components/CapsuleComponent.h"
 #include "HUD/WignumHUD.h"
 #include "HUD/WignumOverlay.h"
+#include "Items/Soul.h"
+#include "Items/Treasure.h"
 
 /**
  * Kwang character class constructor
@@ -118,7 +120,20 @@ void AKwang::SetOverlappingItem(AItem* Item)
 
 void AKwang::AddSouls(ASoul* Soul)
 {
-	
+	if (Attributes && WignumOverlay)
+	{
+		Attributes->AddSouls(Soul->GetSouls());
+		WignumOverlay->SetSouls(Attributes->GetSouls());
+	}
+}
+
+void AKwang::AddGold(ATreasure* Treasure)
+{
+	if (Attributes && WignumOverlay)
+	{
+		Attributes->AddGold(Treasure->GetGold());
+		WignumOverlay->SetGold(Attributes->GetGold());
+	}
 }
 
 void AKwang::InitialiseWignumOverlay(const APlayerController* PlayerController)

@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "PickupInterface.generated.h"
 
+class ATreasure;
 class ASoul;
 class AItem;
 // This class does not need to be modified.
@@ -25,4 +26,5 @@ class WORLDOFWIGNUM_API IPickupInterface
 public:
 	virtual void SetOverlappingItem(AItem* Item);
 	virtual void AddSouls(ASoul* Soul);
+	virtual void AddGold(ATreasure* Treasure);
 };
