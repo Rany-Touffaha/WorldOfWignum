@@ -237,7 +237,9 @@ void AKwang::Attack()
 // Function to handle dodge action
 void AKwang::Dodge()
 {
-	// TODO: Implement dodging mechanic
+	if (ActionState != EActionState::EAS_Unoccupied) return;
+	PlayDodgeMontage();
+	ActionState = EActionState::EAS_Dodge;
 }
 
 void AKwang::EquipWeapon(AWeapon* Weapon)
@@ -258,6 +260,12 @@ bool AKwang::CanAttack() const
 // Function to change action state to unoccupied at the end of an attack
 void AKwang::AttackEnd()
 {
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AKwang::DodgeEnd()
+{
+	Super::DodgeEnd();
 	ActionState = EActionState::EAS_Unoccupied;
 }
 

@@ -109,6 +109,10 @@ void ABaseCharacter::AttackEnd()
 {
 }
 
+void ABaseCharacter::DodgeEnd()
+{
+}
+
 void ABaseCharacter::PlayHitSound(const FVector& ImpactPoint) const
 {
 	// Plays sound if gets hit
@@ -175,6 +179,11 @@ int32 ABaseCharacter::PlayDeathMontage()
 	}
 	
 	return Selection;
+}
+
+void ABaseCharacter::PlayDodgeMontage()
+{
+	PlayMontageSection(DodgeMontage, FName("Default"));
 }
 
 void ABaseCharacter::StopAttackMontage() const

@@ -51,6 +51,7 @@ protected:
 	void EquipWeapon(AWeapon* Weapon);
 	virtual bool CanAttack() const override;
 	virtual void AttackEnd() override;
+	virtual void DodgeEnd() override;
 	bool CanDisarm() const;
 	bool CanArm() const;
 	void Disarm();
