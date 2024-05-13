@@ -8,6 +8,7 @@
 #include "Enemy.generated.h"
 
 
+class ASoul;
 // Forward declarations for Enemy class
 class UHealthBarComponent;
 class UPawnSensingComponent;
@@ -39,6 +40,7 @@ public:
 protected:
 	/** <AActor> */
 	virtual void BeginPlay() override;
+	void SpawnSoul() const;
 	/** </AActor> */
 
 	/** <ABaseCharacter> */
@@ -133,5 +135,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float DeathLifeSpan = 8.f;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<ASoul> SoulClass;
 };
 

@@ -10,9 +10,10 @@ void ASoul::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	{
 		// Set overlapping item for the pickup interface
 		PickupInterface->AddSouls(this);
-	}
-	SpawnPickupSystem();
-	SpawnPickupSound();
+
+		SpawnPickupSystem();
+		SpawnPickupSound();
 	
-	Destroy();
+		Destroy();
+	}
 }

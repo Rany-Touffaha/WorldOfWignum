@@ -6,9 +6,11 @@
 #include "Components/AttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
+#include "Items/Soul.h"
 #include "Items/Weapons/Weapon.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Items/Soul.h"
 
 /**
  * Enemy class constructor
@@ -89,6 +91,17 @@ void AEnemy::BeginPlay()
 	Tags.Add(FName("Enemy"));
 }
 
+void AEnemy::SpawnSoul() const
+{
+	if (UWorld* World = GetWorld(); World && SoulClass && Attributes)
+	{
+		if (ASoul* SpawndedSoul = World->SpawnActor<ASoul>(SoulClass, GetActorLocation(), GetActorRotation()))
+		{
+			SpawndedSoul->SetSouls(Attributes->GetSouls());
+		}
+	}
+}
+
 void AEnemy::Die()
 {
 	Super::Die();
@@ -100,6 +113,7 @@ void AEnemy::Die()
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+	SpawnSoul();
 }
 
 void AEnemy::Attack()
