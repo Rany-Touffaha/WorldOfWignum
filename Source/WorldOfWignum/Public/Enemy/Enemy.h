@@ -51,7 +51,7 @@ protected:
 	virtual void HandleDamage(float DamageAmount) override;
 	/** </ABaseCharacter> */
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
 private:

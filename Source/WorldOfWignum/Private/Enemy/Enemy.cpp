@@ -73,11 +73,16 @@ void AEnemy::Destroyed()
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
-	if (!IsDead()) ShowHealthBar();
+	if (!IsDead())
+		ShowHealthBar();
+	
 	ClearPatrolTimer();
 	ClearAttackTimer();
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 	StopAttackMontage();
+	
+	if (IsInsideAttackRadius() && !IsDead())
+		StartAttackTimer();
 }
 
 void AEnemy::BeginPlay()

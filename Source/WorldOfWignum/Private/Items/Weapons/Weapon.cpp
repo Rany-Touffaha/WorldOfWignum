@@ -133,6 +133,7 @@ void AWeapon::BoxTrace(FHitResult& BoxHit)
 	// Create a list of actors that should be ignored by the weapon when hitting them
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
+	ActorsToIgnore.Add(GetOwner());
 
 	// Loop over the list of ignore actors and add them to list of actors to ignore in the box trace 
 	for (AActor* Actor : IgnoreActors)
