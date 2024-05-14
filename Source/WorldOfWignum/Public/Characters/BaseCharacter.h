@@ -27,7 +27,6 @@ protected:
 	/** Combat */
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual void Attack();
-	virtual void Die();
 	void DirectionalHitReact(const FVector& ImpactPoint) const;
 	virtual void HandleDamage(float DamageAmount);
 	void PlayHitSound(const FVector& ImpactPoint) const;
@@ -44,6 +43,9 @@ protected:
 	virtual void PlayDodgeMontage();
 	void StopAttackMontage() const;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();
+	
 	UFUNCTION(BlueprintCallable)
 	FVector GetTranslationWarpTarget() const;
 

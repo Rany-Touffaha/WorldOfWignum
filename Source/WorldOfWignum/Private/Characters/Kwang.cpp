@@ -334,7 +334,7 @@ void AKwang::PlayEquipMontage(const FName& SectionName) const
 	}
 }
 
-void AKwang::Die()
+void AKwang::Die_Implementation()
 {
 	Super::Die();
 	ActionState = EActionState::EAS_Dead;
