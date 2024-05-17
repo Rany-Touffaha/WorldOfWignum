@@ -218,6 +218,11 @@ void AKwang::EKeyPressed()
 {
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+		}
+		
 		EquipWeapon(OverlappingWeapon);
 	}
 	else

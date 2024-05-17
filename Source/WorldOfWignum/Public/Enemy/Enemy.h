@@ -8,12 +8,13 @@
 #include "Enemy.generated.h"
 
 
-class ASoul;
+
 // Forward declarations for Enemy class
 class UHealthBarComponent;
 class UPawnSensingComponent;
 class AAIController;
 class AWeapon;
+class ASoul;
 
 /**
  * Enemy class declaration
@@ -40,7 +41,7 @@ public:
 protected:
 	/** <AActor> */
 	virtual void BeginPlay() override;
-	void SpawnSoul() const;
+	void SpawnSoul();
 	/** </AActor> */
 
 	/** <ABaseCharacter> */

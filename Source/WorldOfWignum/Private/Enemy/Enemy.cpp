@@ -10,7 +10,6 @@
 #include "Items/Weapons/Weapon.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "Items/Soul.h"
 
 /**
  * Enemy class constructor
@@ -96,13 +95,15 @@ void AEnemy::BeginPlay()
 	Tags.Add(FName("Enemy"));
 }
 
-void AEnemy::SpawnSoul() const
+void AEnemy::SpawnSoul()
 {
 	if (UWorld* World = GetWorld(); World && SoulClass && Attributes)
 	{
-		if (ASoul* SpawndedSoul = World->SpawnActor<ASoul>(SoulClass, GetActorLocation(), GetActorRotation()))
+		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, 125.f);
+		if (ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, SpawnLocation, GetActorRotation()))
 		{
-			SpawndedSoul->SetSouls(Attributes->GetSouls());
+			SpawnedSoul->SetSouls(Attributes->GetSouls());
+			SpawnedSoul->SetOwner(this);
 		}
 	}
 }
