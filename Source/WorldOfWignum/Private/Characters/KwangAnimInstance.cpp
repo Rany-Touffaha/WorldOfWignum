@@ -5,38 +5,32 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
-// Initialise animation instance
+/**
+ * Initialise animation instance
+ */
 void UKwangAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	// Get the owning pawn
 	Kwang = Cast<AKwang>(TryGetPawnOwner());
 	if (Kwang)
-	{
-		// Get the character movement component
 		KwangMovement = Kwang->GetCharacterMovement();
-	}
 }
 
-// Update animation instance every frame
+/**
+ * Update animation instance every frame
+ * @param DeltaTime Number of frames per second
+ */
 void UKwangAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
 
 	if(KwangMovement)
 	{
-		// Calculate ground speed using velocity
 		GroundSpeed = UKismetMathLibrary::VSizeXY(KwangMovement->Velocity);
-
-		// Check if the character is falling
 		IsFalling = KwangMovement->IsFalling();
-
-		// Get the character's current state
 		CharacterState = Kwang->GetCharacterState();
-
 		ActionState = Kwang->GetActionState();
-
 		DeathPose = Kwang->GetDeathPose();
 	}
 }

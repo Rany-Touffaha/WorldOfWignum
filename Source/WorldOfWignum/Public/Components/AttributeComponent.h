@@ -6,9 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "AttributeComponent.generated.h"
 
-/**
- * Attribute Component class declaration
- */
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class WORLDOFWIGNUM_API UAttributeComponent : public UActorComponent
 {
@@ -52,23 +49,16 @@ private:
 	float StaminaRegenRate = 8.f;
 	
 public:
-	// Reduces health from bound object
 	void ReceiveDamage(float Damage);
-
 	void UseStamina(float StaminaCost);
-
-	// Getter for health percentage
 	float GetHealthPercent() const;
-
-	// Getter for health percentage
 	float GetStaminaPercent() const;
-
-	// Check if character's health is above 0
 	bool IsAlive() const;
 
 	void AddGold(int32 AmountOfGold);
 	void AddSouls(int32 NumberOfSouls);
 
+	/** Getters and Setters */
 	FORCEINLINE int32 GetGold() const { return Gold; }
 	FORCEINLINE int32 GetSouls() const { return Souls; }
 	FORCEINLINE int32 GetDodgeCost() const { return DodgeCost; }

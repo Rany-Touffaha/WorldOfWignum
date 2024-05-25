@@ -29,7 +29,7 @@ enum class EActionState : uint8
 };
 
 /**
- * Enum class declaration for enemy death pose states
+ * Enum declaration for enemy death pose states
  */
 UENUM(BlueprintType)
 enum EDeathPose
