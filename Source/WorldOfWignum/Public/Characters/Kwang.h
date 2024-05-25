@@ -9,7 +9,6 @@
 #include "Interfaces/PickupInterface.h"
 #include "Kwang.generated.h"
 
-
 // Forward declarations for Kwang class
 class UInputMappingContext;
 class UInputAction;
@@ -19,9 +18,6 @@ class AItem;
 class UAnimMontage;
 class UWignumOverlay;
 
-/**
- * Kwang character class declaration
- */
 UCLASS()
 class WORLDOFWIGNUM_API AKwang : public ABaseCharacter, public IPickupInterface
 {
@@ -33,10 +29,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	/** <IHitInterface>*/
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	/** </IHitInterface> */
+	
+	/** <IPickupInterface>*/
 	virtual void SetOverlappingItem(AItem* Item) override;
 	virtual void AddSouls(ASoul* Soul) override;
 	virtual void AddGold(ATreasure* Treasure) override;
+	/** </IPickupInterface> */
 	
 protected:
 	virtual void BeginPlay() override;
@@ -63,10 +65,10 @@ protected:
 	bool HasEnoughStamina() const;
 		
 	UFUNCTION(BlueprintCallable)
-	void AttachWeaponToBack();
+	void AttachWeaponToBack() const;
 
 	UFUNCTION(BlueprintCallable)
-	void AttachWeaponToHand();
+	void AttachWeaponToHand() const;
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
@@ -74,9 +76,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void HitReactEnd();
 	
-	/**
-	 *	Input Actions
-	 */
+	/** Input Actions */
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* KwangContext;
 	
@@ -99,9 +99,11 @@ protected:
 	UInputAction* DodgeAction;
 
 private:
+	/** UI functions */
 	void InitialiseWignumOverlay(const APlayerController* PlayerController);
 	void InitialiseInputMappingContext(const APlayerController* PlayerController) const;
 	void SetHUDHealth() const;
+	
 	bool IsUnoccupied() const;
 	
 	/** Character Components */
@@ -122,11 +124,14 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
+	/** UI Components */
 	UPROPERTY()
 	UWignumOverlay* WignumOverlay;
 	
 public:
+	/** Getters and Setters */
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 	FORCEINLINE EActionState GetActionState() const { return ActionState; }
+	
 };
  

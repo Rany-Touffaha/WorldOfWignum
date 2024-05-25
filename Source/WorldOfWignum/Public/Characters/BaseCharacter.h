@@ -8,6 +8,7 @@
 #include "Interfaces/HitInterface.h"
 #include "BaseCharacter.generated.h"
 
+// Forward declarations for BaseCharacter class
 class UAttributeComponent;
 class AWeapon;
 class UAnimMontage;
@@ -24,8 +25,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	/** Combat */
+	/** <IHitInterface>*/
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	/** </IHitInterface> */
+
+	/** Combat */
 	virtual void Attack();
 	void DirectionalHitReact(const FVector& ImpactPoint) const;
 	virtual void HandleDamage(float DamageAmount);
@@ -61,6 +65,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled) const;
 	
+	/** Character Components */
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
 	
@@ -77,7 +82,6 @@ protected:
 	TEnumAsByte<EDeathPose> DeathPose;
 	
 private:
-	
 	/** Animation montages */
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
 	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames) const;
@@ -108,7 +112,6 @@ private:
 	UParticleSystem* HitParticles;
 
 public:
-	
 	/** Getters and Setters */
 	FORCEINLINE TEnumAsByte<EDeathPose> GetDeathPose() const { return DeathPose; }
 };

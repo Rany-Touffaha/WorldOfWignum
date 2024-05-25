@@ -32,7 +32,7 @@ void ABaseCharacter::BeginPlay()
 }
 
 /**
-* Handles base character reaction when getting hit using IHitInterface 
+* Handles base character's reaction when getting hit using IHitInterface 
 * @param ImpactPoint Location of impact point of the hit
 * @param Hitter Actor that is hitting the base enemy
 */

@@ -17,9 +17,6 @@
 #include "Items/Soul.h"
 #include "Items/Treasure.h"
 
-/**
- * Kwang character class constructor
- */
 AKwang::AKwang()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,12 +32,14 @@ AKwang::AKwang()
 	// Change the speed of the Rotation Rate
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
+	// Set collision responses for capsule component
 	GetCapsuleComponent()->SetCollisionObjectType(ECC_WorldDynamic);
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 
+	// Set collision responses for character mesh
 	GetMesh()->SetCollisionObjectType(ECC_WorldDynamic);
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
@@ -61,6 +60,7 @@ void AKwang::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	// Update UI for Kwang's stamina
 	if (Attributes && WignumOverlay)
 	{
 		Attributes->RegenStamina(DeltaSeconds);
@@ -68,7 +68,10 @@ void AKwang::Tick(float DeltaSeconds)
 	}
 }
 
-// Override SetupPlayerInputComponent function to bind input actions to corresponding functions
+/**
+ * Sets up the player's input controller by binding the input actions to corresponding functions
+ * @param PlayerInputComponent Player's current controller
+ */
 void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -85,25 +88,23 @@ void AKwang::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
-bool AKwang::IsUnoccupied() const
-{
-	return ActionState == EActionState::EAS_Unoccupied;
-}
-
+/**
+ * Callback function to handle jump movement
+ */
 void AKwang::Jump()
 {
 	if (IsUnoccupied())
 		Super::Jump();
 }
 
-void AKwang::SetHUDHealth() const
-{
-	if (WignumOverlay && Attributes)
-	{
-		WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
-	}
-}
-
+/**
+ * Takes damage from Kwang's health
+ * @param DamageAmount Amount of damage to be taken
+ * @param DamageEvent Event type used by UE
+ * @param EventInstigator Controller that instigates the event
+ * @param DamageCauser Actor that causes the damage
+ * @return Amount of damage to be taken from Kwang's health
+ */
 float AKwang::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
@@ -111,6 +112,11 @@ float AKwang::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return DamageAmount;
 }
 
+/**
+ * Handles Kwang's reaction when getting hit using IHitInterface 
+ * @param ImpactPoint Location of impact point of the hit
+ * @param Hitter Actor that is hitting Kwang
+ */
 void AKwang::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
@@ -118,16 +124,22 @@ void AKwang::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (Attributes && Attributes->GetHealthPercent() > 0.f)
-	{
 		ActionState = EActionState::EAS_HitReaction;
-	}
 }
 
+/**
+ * Sets the overlapping item variable
+ * @param Item Item that is overlapping with Kwang
+ */
 void AKwang::SetOverlappingItem(AItem* Item)
 {
 	OverlappingItem = Item;
 }
 
+/**
+ * Adds souls to the attributes and updates the UI
+ * @param Soul Soul that was picked up in the world
+ */
 void AKwang::AddSouls(ASoul* Soul)
 {
 	if (Attributes && WignumOverlay)
@@ -137,36 +149,16 @@ void AKwang::AddSouls(ASoul* Soul)
 	}
 }
 
+/**
+ * Adds gold to the attributes and updates the UI
+ * @param Treasure Treasure that was picked up in the world
+ */
 void AKwang::AddGold(ATreasure* Treasure)
 {
 	if (Attributes && WignumOverlay)
 	{
 		Attributes->AddGold(Treasure->GetGold());
 		WignumOverlay->SetGold(Attributes->GetGold());
-	}
-}
-
-void AKwang::InitialiseWignumOverlay(const APlayerController* PlayerController)
-{
-	if (const AWignumHUD* WignumHUD = Cast<AWignumHUD>(PlayerController->GetHUD()))
-	{
-		WignumOverlay = WignumHUD->GetWignumOverlay();
-
-		if (WignumOverlay && Attributes)
-		{
-			WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
-			WignumOverlay->SetStaminaBarPercent(1.f);
-			WignumOverlay->SetGold(0);
-			WignumOverlay->SetSouls(0);
-		}
-	}
-}
-
-void AKwang::InitialiseInputMappingContext(const APlayerController* PlayerController) const
-{
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(KwangContext,0);
 	}
 }
 
@@ -183,7 +175,10 @@ void AKwang::BeginPlay()
 	}
 }
 
-// Function to handle movement input
+/**
+ * Callback function to handle movement input
+ * @param Value Input action value received from the controller
+ */
 void AKwang::Move(const FInputActionValue& Value)
 {
 	// Check of action state is unoccupied before moving
@@ -203,7 +198,10 @@ void AKwang::Move(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, MovementVector.X);
 }
 
-// Function to handle looking around input
+/**
+ * Callback function to handle looking around input
+ * @param Value Input action value received from the controller
+ */
 void AKwang::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -212,16 +210,16 @@ void AKwang::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
-// Function to handle E key action
+/**
+ * Callback function to handle E key action
+ */
 void AKwang::EKeyPressed()
 {
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
 		if (EquippedWeapon)
-		{
 			EquippedWeapon->Destroy();
-		}
-		
+
 		EquipWeapon(OverlappingWeapon);
 	}
 	else
@@ -237,7 +235,9 @@ void AKwang::EKeyPressed()
 	}
 }
 
-// Function to handle attack action
+/**
+ * Callback function to handle attack action
+ */
 void AKwang::Attack()
 {
 	Super::Attack();
@@ -249,17 +249,9 @@ void AKwang::Attack()
 	}
 }
 
-bool AKwang::IsOccupied() const
-{
-	return ActionState != EActionState::EAS_Unoccupied;
-}
-
-bool AKwang::HasEnoughStamina() const
-{
-	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
-}
-
-// Function to handle dodge action
+/**
+ * Callback function to handle dodge action
+ */
 void AKwang::Dodge()
 {
 	if (IsOccupied() || !HasEnoughStamina()) return;
@@ -272,6 +264,10 @@ void AKwang::Dodge()
 	}
 }
 
+/**
+ * Equips weapon to the right hand socket of Kwang
+ * @param Weapon Overlapping weapon object with Kwang in the world
+ */
 void AKwang::EquipWeapon(AWeapon* Weapon)
 {
 	Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
@@ -280,33 +276,48 @@ void AKwang::EquipWeapon(AWeapon* Weapon)
 	EquippedWeapon = Weapon;
 }
 
-// Function that checks if the character can attack
+/**
+ * Checks if Kwang can attack
+ * @return Action state of character is unoccupied and character state is anything but unequipped
+ */
 bool AKwang::CanAttack() const
 {
-	return CharacterState != ECharacterState::ECS_Unequipped &&
-		ActionState == EActionState::EAS_Unoccupied;
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
+		
 }
 
-// Function to change action state to unoccupied at the end of an attack
+/**
+ * Changes action state to unoccupied at the end of an attack
+ */
 void AKwang::AttackEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
+/**
+ * Changes action state to unoccupied at the end of a dodge
+ */
 void AKwang::DodgeEnd()
 {
 	Super::DodgeEnd();
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
-// Function that checks if character can disarm 
+/**
+ * Checks if character can disarm 
+ * @return Action state of character is unoccupied and character state is anything but unequipped
+ */
 bool AKwang::CanDisarm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
 		CharacterState != ECharacterState::ECS_Unequipped;
 }
 
-// Function that checks if character can arm 
+/**
+ * Checks if character can arm 
+ * @return Action state of character is unoccupied and character state is unequipped and there is an equipped weapon
+ */
 bool AKwang::CanArm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
@@ -314,6 +325,9 @@ bool AKwang::CanArm() const
 		EquippedWeapon;
 }
 
+/**
+ * Disarms Kwang
+ */
 void AKwang::Disarm()
 {
 	PlayEquipMontage(FName("Unequip"));
@@ -321,6 +335,9 @@ void AKwang::Disarm()
 	ActionState = EActionState::EAS_EquippingWeapon;
 }
 
+/**
+ * Arms Kwang
+ */
 void AKwang::Arm()
 {
 	PlayEquipMontage(FName("Equip"));
@@ -328,7 +345,10 @@ void AKwang::Arm()
 	ActionState = EActionState::EAS_EquippingWeapon;
 }
 
-// Function that plays the equip montages
+/**
+ * Plays Equip Montage based on section name
+ * @param SectionName Name of section in the Equip animation montage to be played
+ */
 void AKwang::PlayEquipMontage(const FName& SectionName) const
 {
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance(); AnimInstance && EquipMontage)
@@ -338,6 +358,9 @@ void AKwang::PlayEquipMontage(const FName& SectionName) const
 	}
 }
 
+/**
+ * Initiates Kwang's death.
+ */
 void AKwang::Die_Implementation()
 {
 	Super::Die();
@@ -345,31 +368,102 @@ void AKwang::Die_Implementation()
 	DisableMeshCollision();
 }
 
-// Function to attach the weapon to the back of the character
-void AKwang::AttachWeaponToBack()
+/**
+ * Checks if Kwang's action state is unoccupied
+ * @return true if action state of character is not unoccupied, false otherwise
+ */
+bool AKwang::IsOccupied() const
+{
+	return ActionState != EActionState::EAS_Unoccupied;
+}
+
+/**
+ * Checks if Kwang has enough stamina
+ * @return true if the character's current stamina is larger than the dodge cost, false otherwise
+ */
+bool AKwang::HasEnoughStamina() const
+{
+	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
+/**
+ * Attaches the weapon to the back of the Kwang
+ */
+void AKwang::AttachWeaponToBack() const
 {
 	if (EquippedWeapon)
-	{
 		EquippedWeapon -> AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
-	}
 }
 
-// Function to attach the weapon to the right hand of the character
-void AKwang::AttachWeaponToHand()
+/**
+ * Attaches he weapon to the right hand of the character
+ */
+void AKwang::AttachWeaponToHand() const
 {
 	if (EquippedWeapon)
-	{
 		EquippedWeapon -> AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
-	}
 }
 
-// Function to reset the state to unoccupied when done equipping
+/**
+ * Reset the state to unoccupied when done equipping
+ */
 void AKwang::FinishEquipping()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
+/**
+ * Reset the state to unoccupied after reacting to getting hit
+ */
 void AKwang::HitReactEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
+}
+
+/**
+ * Initalises HUD overlay
+ * @param PlayerController Player's current controller
+ */
+void AKwang::InitialiseWignumOverlay(const APlayerController* PlayerController)
+{
+	if (const AWignumHUD* WignumHUD = Cast<AWignumHUD>(PlayerController->GetHUD()))
+	{
+		WignumOverlay = WignumHUD->GetWignumOverlay();
+
+		if (WignumOverlay && Attributes)
+		{
+			WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
+			WignumOverlay->SetStaminaBarPercent(1.f);
+			WignumOverlay->SetGold(0);
+			WignumOverlay->SetSouls(0);
+		}
+	}
+}
+
+/**
+ * Initialises the input mapping context
+ * @param PlayerController Player's current controller
+ */
+void AKwang::InitialiseInputMappingContext(const APlayerController* PlayerController) const
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		Subsystem->AddMappingContext(KwangContext,0);
+}
+
+/**
+ * Setup health bar percetage in HUD
+ */
+void AKwang::SetHUDHealth() const
+{
+	if (WignumOverlay && Attributes)
+		WignumOverlay->SetHealtBarPercent(Attributes->GetHealthPercent());
+}
+
+/**
+ * Checks if the character is unoccupied
+ * @return true if action state of character is unoccupied, false otherwise
+ */
+bool AKwang::IsUnoccupied() const
+{
+	return ActionState == EActionState::EAS_Unoccupied;
 }
