@@ -5,9 +5,7 @@
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Items/Treasure.h"
 
-/**
- * Breakable Actor class constructor
- */
+
 ABreakableActor::ABreakableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -26,23 +24,21 @@ ABreakableActor::ABreakableActor()
 	Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
 
-void ABreakableActor::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ABreakableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Function that handles breakable item reaction when getting hit
+/**
+* Handles breakable item reaction when getting hit using IHitInterface 
+* @param ImpactPoint Location of impact point of the hit
+* @param Hitter Actor that is hitting the breakable object
+*/
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	if (bBroken) return;
 	bBroken = true;
-	UWorld* World = GetWorld();
-	if(World && TreasureClassArray.Num() > 0 )
+	if(UWorld* World = GetWorld(); World && TreasureClassArray.Num() > 0 )
 	{
 		FVector Location = GetActorLocation();
 		Location.Z += 75.f;
@@ -51,6 +47,11 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* 
 		const int32 Selection = FMath::RandRange(0, TreasureClassArray.Num() - 1);
 		World->SpawnActor<ATreasure>(TreasureClassArray[Selection], Location, GetActorRotation(), FActorSpawnParameters());
 	}
-	
 }
+
+void ABreakableActor::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 

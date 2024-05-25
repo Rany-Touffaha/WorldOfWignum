@@ -77,21 +77,11 @@ protected:
 	TEnumAsByte<EDeathPose> DeathPose;
 	
 private:
+	
+	/** Animation montages */
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
 	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames) const;
 	
-	/**
-	 *	Sound and particle variables when getting hit
-	 */
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	USoundBase* HitSound;
-
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	UParticleSystem* HitParticles;
-
-	/**
-	*	Animation montages
-	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	UAnimMontage* AttackMontage;
 
@@ -110,6 +100,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FName> DeathMontageSections;
 
+	/** Sound and particle variables when getting hit */
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UParticleSystem* HitParticles;
+
 public:
+	
+	/** Getters and Setters */
 	FORCEINLINE TEnumAsByte<EDeathPose> GetDeathPose() const { return DeathPose; }
 };

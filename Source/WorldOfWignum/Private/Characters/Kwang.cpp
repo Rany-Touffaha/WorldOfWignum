@@ -7,7 +7,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"

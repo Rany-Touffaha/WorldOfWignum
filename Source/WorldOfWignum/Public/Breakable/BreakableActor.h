@@ -7,7 +7,6 @@
 #include "Interfaces/HitInterface.h"
 #include "BreakableActor.generated.h"
 
-
 // Forward declarations for BreakableActor class
 class UGeometryCollectionComponent;
 class ATreasure;
@@ -24,18 +23,17 @@ class WORLDOFWIGNUM_API ABreakableActor : public AActor, public IHitInterface
 public:	
 	ABreakableActor();
 	virtual void Tick(float DeltaTime) override;
-
-	// Function that handles breakable item reaction when getting hit
-	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hittter) override;
+	
+	/** <IHitInterface>*/
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	/** </IHitInterface> */
 	
 protected:
 	virtual void BeginPlay() override;
 
-	// Geometric Collection Component for breakable objects
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UGeometryCollectionComponent* GeometryCollection;
 
-	// Capsule component for breakable objects
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCapsuleComponent* Capsule;
 
