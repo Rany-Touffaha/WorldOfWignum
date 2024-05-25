@@ -10,9 +10,7 @@ void AWignumHUD::BeginPlay()
 
 	if (const UWorld* World = GetWorld())
 	{
-		APlayerController* Controller = World->GetFirstPlayerController();
-
-		if (Controller && WignumOverlayClass)
+		if (APlayerController* Controller = World->GetFirstPlayerController(); Controller && WignumOverlayClass)
 		{
 			WignumOverlay = CreateWidget<UWignumOverlay>(Controller, WignumOverlayClass);
 			WignumOverlay->AddToViewport();

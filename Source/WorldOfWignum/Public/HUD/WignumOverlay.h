@@ -6,12 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "WignumOverlay.generated.h"
 
+//Forward declarations for Wignum overlay class
 class UTextBlock;
 class UProgressBar;
 
-/**
- * 
- */
 UCLASS()
 class WORLDOFWIGNUM_API UWignumOverlay : public UUserWidget
 {
