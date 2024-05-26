@@ -11,9 +11,6 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
-/**
- * Enemy class constructor
- */
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -36,6 +33,7 @@ AEnemy::AEnemy()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
+	// Create and set up pawn sensing component
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
 	PawnSensing->SightRadius = 4000.f;
 	PawnSensing->SetPeripheralVisionAngle(45.f);
@@ -48,6 +46,14 @@ void AEnemy::Tick(float DeltaTime)
 	EnemyState > EEnemyState::EES_Patrolling ? CheckCombatTarget() : CheckPatrolTarget();
 }
 
+/**
+ * Takes damage from Kwang's health
+ * @param DamageAmount Amount of damage to be taken
+ * @param DamageEvent Event type used by UE
+ * @param EventInstigator Controller that instigates the event
+ * @param DamageCauser Actor that causes the damage
+ * @return Amount of damage to be taken from Kwang's health
+ */
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
@@ -63,12 +69,20 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return DamageAmount;
 }
 
+/**
+ * Destroys equipped weapon
+ */
 void AEnemy::Destroyed()
 {
 	if(EquippedWeapon)
 		EquippedWeapon->Destroy();
 }
 
+/**
+ * Handles Kwang's reaction when getting hit using IHitInterface 
+ * @param ImpactPoint Location of impact point of the hit
+ * @param Hitter Actor that is hitting Kwang
+ */
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
@@ -95,6 +109,9 @@ void AEnemy::BeginPlay()
 	Tags.Add(FName("Enemy"));
 }
 
+/**
+ * Spawn a swoul at the enemy's location
+ */
 void AEnemy::SpawnSoul()
 {
 	if (UWorld* World = GetWorld(); World && SoulClass && Attributes)
@@ -108,6 +125,9 @@ void AEnemy::SpawnSoul()
 	}
 }
 
+/**
+ * Initiates enemy's death.
+ */
 void AEnemy::Die_Implementation()
 {
 	Super::Die_Implementation();
@@ -122,6 +142,9 @@ void AEnemy::Die_Implementation()
 	SpawnSoul();
 }
 
+/**
+ * Initiates enemy attack
+ */
 void AEnemy::Attack()
 {
 	Super::Attack();
@@ -130,6 +153,10 @@ void AEnemy::Attack()
 	PlayAttackMontage();
 }
 
+/**
+ * Checks if enemy can attack
+ * @return true if the enemy can attack, false otherwise
+ */
 bool AEnemy::CanAttack() const
 {
 	const bool bCanAttack =
@@ -141,12 +168,19 @@ bool AEnemy::CanAttack() const
 	return bCanAttack;
 }
 
+/**
+ * Changes enemy state and combat target when the attack has ended 
+ */
 void AEnemy::AttackEnd()
 {
 	EnemyState = EEnemyState::EES_NoState;
 	CheckCombatTarget();
 }
 
+/**
+ * Updates character's health in the attributes component
+ * @param DamageAmount Amount of damage to be received
+ */
 void AEnemy::HandleDamage(const float DamageAmount)
 {
 	Super::HandleDamage(DamageAmount);
@@ -156,6 +190,9 @@ void AEnemy::HandleDamage(const float DamageAmount)
 	}
 }
 
+/**
+ * Initialise enemy movement and functionality
+ */
 void AEnemy::InitialiseEnemy()
 {
 	EnemyController = Cast<AAIController>(GetController());
@@ -164,6 +201,9 @@ void AEnemy::InitialiseEnemy()
 	SpawnDefaultWeapon();
 }
 
+/**
+ * Checks patrol targets
+ */
 void AEnemy::CheckPatrolTarget()
 {
 	if (InTargetRange(PatrolTarget, PatrolRadius))
@@ -174,6 +214,9 @@ void AEnemy::CheckPatrolTarget()
 	}
 }
 
+/**
+ * Checks combat targets
+ */
 void AEnemy::CheckCombatTarget()
 {
 	if (IsOutsideCombatRadius())
@@ -195,33 +238,44 @@ void AEnemy::CheckCombatTarget()
 	}
 }
 
+/**
+ * Moves to next target once patrol timer is finished 
+ */
 void AEnemy::PatrolTimerFinished() const
 {
 	MoveToTarget(PatrolTarget);	
 }
 
+/**
+ * Hides health bar
+ */
 void AEnemy::HideHealthBar() const
 {
 	if (HealthBarWidget)
-	{
 		HealthBarWidget->SetVisibility(false);
-	}
 }
 
+/**
+ * Shows health bar 
+ */
 void AEnemy::ShowHealthBar() const
 {
 	if (HealthBarWidget)
-	{
 		HealthBarWidget->SetVisibility(true);
-	}
 }
 
+/**
+ * Makes enemy lose interest
+ */
 void AEnemy::LoseInterest()
 {
 	CombatTarget = nullptr;
 	HideHealthBar();
 }
 
+/**
+ * Starts enemy patrolling
+ */
 void AEnemy::StartPatrolling()
 {
 	EnemyState = EEnemyState::EES_Patrolling;
@@ -229,6 +283,9 @@ void AEnemy::StartPatrolling()
 	MoveToTarget(PatrolTarget);
 }
 
+/**
+ * Chases target
+ */
 void AEnemy::ChaseTarget()
 {
 	EnemyState = EEnemyState::EES_Chasing;
@@ -236,46 +293,80 @@ void AEnemy::ChaseTarget()
 	MoveToTarget(CombatTarget);
 }
 
+/**
+ * Checks if target is outside combat radius
+ * @return true if outside combat radius, false otherwise
+ */
 bool AEnemy::IsOutsideCombatRadius() const
 {
 	return !InTargetRange(CombatTarget, CombatRadius);
 }
 
+/**
+ * Checks if target is outside attack radius
+ * @return true if outside attack radius, false otherwise
+ */
 bool AEnemy::IsOutsideAttackRadius() const
 {
 	return !InTargetRange(CombatTarget, AttackRadius);
 }
 
+/**
+ * Checks if target is inside attack radius
+ * @return true if inside attack radius, false otherwise
+ */
 bool AEnemy::IsInsideAttackRadius() const
 {
 	return InTargetRange(CombatTarget, AttackRadius);
 }
 
+/**
+ * Checks if enemy state is in chasing mode
+ * @return true if enemy state is set to Chasing, false otherwise
+ */
 bool AEnemy::IsChasing() const
 {
 	return EnemyState == EEnemyState::EES_Chasing;
 }
 
+/**
+ * Checks if enemy state is in attacking mode
+ * @return true if enemy state is set to Attacking, false otherwise
+ */
 bool AEnemy::IsAttacking() const
 {
 	return EnemyState == EEnemyState::EES_Attacking;
 }
 
+/**
+ * Checks if enemy state is in dead state
+ * @return true if enemy state is set to Dead, false otherwise
+ */
 bool AEnemy::IsDead() const
 {
 	return EnemyState == EEnemyState::EES_Dead;
 }
 
+/**
+ * Checks if enemy state is in Engaged state
+ * @return true if enemy state is set to Engaged, false otherwise
+ */
 bool AEnemy::IsEngaged() const
 {
 	return EnemyState == EEnemyState::EES_Engaged;
 }
 
+/**
+ * Clears patrol timer
+ */
 void AEnemy::ClearPatrolTimer()
 {
 	GetWorldTimerManager().ClearTimer(PatrolTimer);	
 }
 
+/**
+ * Starts attack timer
+ */
 void AEnemy::StartAttackTimer()
 {
 	EnemyState = EEnemyState::EES_Attacking;
@@ -283,11 +374,20 @@ void AEnemy::StartAttackTimer()
 	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
 }
 
+/**
+ * Clears attack timer
+ */
 void AEnemy::ClearAttackTimer()
 {
 	GetWorldTimerManager().ClearTimer(AttackTimer);
 }
 
+/**
+ * Checks if target is in range
+ * @param Target Actor that is set as the target
+ * @param Radius Distance between the target and the current enemy
+ * @return true if target is in range, false otherwise
+ */
 bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const
 {
 	if (Target == nullptr) return false;
@@ -297,6 +397,10 @@ bool AEnemy::InTargetRange(const AActor* Target, const double Radius) const
 	return DistanceToTarget <= Radius;
 }
 
+/**
+ * Makes enemy move to the set target
+ * @param Target Actor that is set as the target
+ */
 void AEnemy::MoveToTarget(const AActor* Target) const
 {
 	if (EnemyController == nullptr || Target == nullptr) return;
@@ -306,19 +410,20 @@ void AEnemy::MoveToTarget(const AActor* Target) const
 	EnemyController->MoveTo(MoveRequest);
 }
 
+/**
+ * Randomly select a patrol target
+ * @return Actor that is set as the patrol target
+ */
 AActor* AEnemy::ChoosePatrolTarget()
 {
 	TArray<AActor*> ValidTargets;
 	for (AActor* Target : PatrolTargets)
 	{
 		if(Target != PatrolTarget)
-		{
 			ValidTargets.AddUnique(Target);
-		}
 	}
-			
-	const int32 NumPatrolTargets = ValidTargets.Num();
-	if (NumPatrolTargets > 0)
+
+	if (const int32 NumPatrolTargets = ValidTargets.Num(); NumPatrolTargets > 0)
 	{
 		const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets -1);
 		return ValidTargets[TargetSelection];
@@ -327,6 +432,9 @@ AActor* AEnemy::ChoosePatrolTarget()
 	return nullptr;
 }
 
+/**
+ * Spawns a default weapon for the enemy
+ */
 void AEnemy::SpawnDefaultWeapon()
 {
 	if(UWorld* World = GetWorld(); World && WeaponClass)
@@ -337,6 +445,10 @@ void AEnemy::SpawnDefaultWeapon()
 	}
 }
 
+/**
+ * Callback function for OnPawnSeen in UPawnSensingComponent
+ * @param SeenPawn Pawn that has been see and needs to be set at the combat target
+ */
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
 	const bool bShouldChaseTarget =

@@ -15,9 +15,6 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
-/**
- * Bird class declaration
- */
 UCLASS()
 class WORLDOFWIGNUM_API ABird : public APawn
 {
@@ -26,45 +23,36 @@ class WORLDOFWIGNUM_API ABird : public APawn
 public:
 	ABird();
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 protected:
 	virtual void BeginPlay() override;
 
-	// Property for bird's input mapping context
+	/** Callback functions for input */
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+
+	/** Input Actions */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputMappingContext* BirdMappingContext;
 
-	// Property for bird's move action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputAction* MoveAction;
 
-	// Property for bird's look action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Input)
 	UInputAction* LookAction;
 
-	// Function to handle bird movement
-	void Move(const FInputActionValue& Value);
-
-	// Function to handle bird looking
-	void Look(const FInputActionValue& Value);
-
 private:
-	// Capsule component for collision
+	/** Bird Components */
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
 
-	// Skeletal mesh component for the bird
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* BirdMesh;
 
-	// Spring arm component for camera control
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
-	// Camera component for bird's view
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
 };

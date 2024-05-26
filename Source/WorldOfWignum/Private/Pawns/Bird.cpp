@@ -8,9 +8,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
-/**
- * Bird class declaration
- */
 ABird::ABird()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -43,6 +40,22 @@ void ABird::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+/**
+ * Sets up the player's input controller by binding the input actions to corresponding functions
+ * @param PlayerInputComponent Player's current controller
+ */
+void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		// Bind the bird's movement and look functions to input actions using Enhanced Input
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABird::Look);
+	}
+}
+
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
@@ -57,7 +70,10 @@ void ABird::BeginPlay()
 	}
 }
 
-// Function to handle bird movement
+/**
+ * Callback function to handle movement input
+ * @param Value Input action value received from the controller
+ */
 void ABird::Move(const FInputActionValue& Value)
 {
 	if(const float DirectionValue = Value.Get<float>(); Controller && DirectionValue != 0.f)
@@ -68,7 +84,10 @@ void ABird::Move(const FInputActionValue& Value)
 		}
 }
 
-// Function to handle bird looking
+/**
+ * Callback function to handle looking around input
+ * @param Value Input action value received from the controller
+ */
 void ABird::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
@@ -79,17 +98,3 @@ void ABird::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisValue.Y);
 	}
 }
-
-// Called to bind functionality to input
-void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		// Bind the bird's movement and look functions to input actions using Enhanced Input
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABird::Look);
-	}
-}
-

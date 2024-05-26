@@ -13,7 +13,6 @@ void UWignumOverlay::SetHealtBarPercent(const float Percent) const
 {
 	if (HealthProgressBar)
 		HealthProgressBar->SetPercent(Percent);
-	
 }
 
 /**

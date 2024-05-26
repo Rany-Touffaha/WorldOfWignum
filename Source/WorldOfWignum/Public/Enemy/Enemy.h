@@ -7,8 +7,6 @@
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
-
-
 // Forward declarations for Enemy class
 class UHealthBarComponent;
 class UPawnSensingComponent;
@@ -16,9 +14,6 @@ class AAIController;
 class AWeapon;
 class ASoul;
 
-/**
- * Enemy class declaration
- */
 UCLASS()
 class WORLDOFWIGNUM_API AEnemy : public ABaseCharacter
 {

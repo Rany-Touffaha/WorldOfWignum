@@ -16,7 +16,6 @@ class WORLDOFWIGNUM_API UWignumOverlay : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
 	void SetHealtBarPercent(float Percent) const;
 	void SetStaminaBarPercent(float Percent) const;
 	void SetGold(int32 Gold) const;
