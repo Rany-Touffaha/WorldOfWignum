@@ -6,10 +6,9 @@
 #include "Items/Item.h"
 #include "Soul.generated.h"
 
+// Forward declarations for Soul class
 class UNiagaraSystem;
-/**
- * 
- */
+
 UCLASS()
 class WORLDOFWIGNUM_API ASoul : public AItem
 {
@@ -21,8 +20,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	
 private:
-
 	double DesiredZ;
 
 	UPROPERTY(EditAnywhere)
@@ -32,6 +31,7 @@ private:
 	int32 Souls;
 
 public:
+	/** Getters and Setters */
 	FORCEINLINE int32 GetSouls() const { return Souls; }
 	FORCEINLINE void SetSouls(const int32 NumberOfSouls) { Souls = NumberOfSouls; }
 };

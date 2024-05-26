@@ -16,6 +16,15 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void RegenStamina(float DeltaTime);
 
+	void ReceiveDamage(float Damage);
+	void UseStamina(float StaminaCost);
+	float GetHealthPercent() const;
+	float GetStaminaPercent() const;
+	bool IsAlive() const;
+
+	void AddGold(int32 AmountOfGold);
+	void AddSouls(int32 NumberOfSouls);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,15 +58,6 @@ private:
 	float StaminaRegenRate = 8.f;
 	
 public:
-	void ReceiveDamage(float Damage);
-	void UseStamina(float StaminaCost);
-	float GetHealthPercent() const;
-	float GetStaminaPercent() const;
-	bool IsAlive() const;
-
-	void AddGold(int32 AmountOfGold);
-	void AddSouls(int32 NumberOfSouls);
-
 	/** Getters and Setters */
 	FORCEINLINE int32 GetGold() const { return Gold; }
 	FORCEINLINE int32 GetSouls() const { return Souls; }

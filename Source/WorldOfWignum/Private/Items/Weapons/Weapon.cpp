@@ -8,9 +8,6 @@
 #include "Interfaces/HitInterface.h"
 #include "NiagaraComponent.h"
 
-/**
- * Weapon class constructor
- */
 AWeapon::AWeapon()
 {
 	// Create a box component and set up collsion responses
@@ -29,6 +26,82 @@ AWeapon::AWeapon()
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
 }
 
+/**
+ * Attach an item mesh to a socket
+ * @param InParent Scene component that becomes the parent of the weapon
+ * @param InSocketName Name of socket to attach the weapon
+ */
+void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName InSocketName) const
+{
+	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
+/**
+ * Plays equip sound
+ */
+void AWeapon::PlayEquipSound() const
+{
+	if (EquipSound)
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
+}
+
+/**
+ * Disables sphere collsion
+ */
+void AWeapon::DisableSphereCollision() const
+{
+	if (Sphere)
+		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+/**
+ * Deactivate embers effect for weapon
+ */
+void AWeapon::DeactivateEmbers() const
+{
+	if (ItemEffect)
+		ItemEffect->Deactivate();
+}
+
+/**
+ * Equips the weapon to a parent scene component at a specific socket
+ * @param InParent Scene component that becomes the parent of the weapon
+ * @param InSocketName Name of socket to attach the weapon
+ * @param NewOwner Actor that is the new owner of the weapon
+ * @param NewInstigator Pawn that is the instigator of the weapon
+ */
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
+{
+	ItemState = EItemState::EIS_Equipped;
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
+	AttachMeshToSocket(InParent, InSocketName);
+	DisableSphereCollision();
+	PlayEquipSound();
+	DeactivateEmbers();
+}
+
+/**
+ * Execute get hit if the actor is valid
+ * @param BoxHit Hit result for the box trace
+ */
+void AWeapon::ExecuteGetHit(const FHitResult& BoxHit) const
+{
+	if(const IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
+}
+
+/**
+ * Checks if the overlapping actor has an Enemy tag or not
+ * @param OtherActor Actor that has overlappoed with the weapon
+ * @return true of the actor has an enemy tag, false otherwise
+ */
+bool AWeapon::ActorIsSameType(const AActor* OtherActor) const
+{
+	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
+}
+
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -37,77 +110,17 @@ void AWeapon::BeginPlay()
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxOverlap);
 }
 
-// Function to attach an item mesh to a socket
-void AWeapon::AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const
-{
-	const FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
-}
-
-void AWeapon::PlayEquipSound() const
-{
-	if (EquipSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
-	}
-}
-
-void AWeapon::DisableSphereCollision() const
-{
-	if (Sphere)
-	{
-		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-}
-
-void AWeapon::DeactivateEmbers() const
-{
-	if (ItemEffect)
-	{
-		ItemEffect->Deactivate();
-	}
-}
-
-// Function to equip the weapon to a parent scene component at a specific socket
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
-{
-	// Set the Item State to equipped
-	ItemState = EItemState::EIS_Equipped;
-	
-	// Set owner and instigator
-	SetOwner(NewOwner);
-	SetInstigator(NewInstigator);
-	
-	// Attach mesh to a socket
-	AttachMeshToSocket(InParent, InSocketName);
-
-	// Disable the collision of the character sphere with the weapon when equipping to the back
-	DisableSphereCollision();
-	
-	// Play sound when equipping
-	PlayEquipSound();
-	
-	// Disable Niagara effect once the weapon is picked up
-	DeactivateEmbers();
-}
-
-void AWeapon::ExecuteGetHit(const FHitResult& BoxHit) const
-{
-	// Execute get hit if the actor is valid
-	if(const IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor()))
-	{
-		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
-	}
-}
-
-bool AWeapon::ActorIsSameType(const AActor* OtherActor) const
-{
-	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
-}
-
-// Create a box trace if the weapon overlaps with another component
+/**
+ * Creates a box trace if the weapon overlaps with another component
+ * @param OverlappedComponent paramter not in use since function is an override from parent class
+ * @param OtherActor paramter not in use since function is an override from parent class
+ * @param OtherComp paramter not in use since function is an override from parent class
+ * @param OtherBodyIndex paramter not in use since function is an override from parent class
+ * @param bFromSweep paramter not in use since function is an override from parent class
+ * @param SweepResult paramter not in use since function is an override from parent class
+ */
 void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                           int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (ActorIsSameType(OtherActor)) return;;
 	
@@ -124,6 +137,10 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 }
 
+/**
+ * Creates a box hit trace for the weapon 
+ * @param BoxHit Hit result for the box trace
+ */
 void AWeapon::BoxTrace(FHitResult& BoxHit)
 {
 	// Create start and end point of the box trace

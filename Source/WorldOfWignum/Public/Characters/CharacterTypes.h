@@ -1,6 +1,5 @@
 // World of Wignum by Rany Touffaha
 
-// ReSharper disable All
 #pragma once
 
 /**
